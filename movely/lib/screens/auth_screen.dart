@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movely/screens/login_screen.dart';
 import 'package:movely/screens/register_screen.dart';
 import 'package:movely/services/activity_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthScreen extends StatefulWidget {
   final ActivityService activityService;
@@ -55,7 +56,8 @@ class _AuthScreenState extends State<AuthScreen> {
         _showOtpField = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Check your email for the verification code!')),
+        const SnackBar(
+            content: Text('Check your email for the verification code!')),
       );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -112,9 +114,9 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Text(
                     'Movely',
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 ),
