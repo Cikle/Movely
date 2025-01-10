@@ -100,9 +100,10 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Spacer(),
                 ShaderMask(
                   shaderCallback: (bounds) => LinearGradient(
                     colors: [Colors.purple.shade400, Colors.blue.shade400],
@@ -118,40 +119,50 @@ class _AuthScreenState extends State<AuthScreen> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 48),
+                const Spacer(),
                 if (!_showOtpField && (_emailController.text.isEmpty)) ...[
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isNewAccount = true;
-                      });
-                      _showEmailInput();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(
-                        color: _isNewAccount ? Colors.purple.shade400 : Colors.grey,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 32.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isNewAccount = true;
+                            });
+                            _showEmailInput();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E1E1E),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            minimumSize: const Size(double.infinity, 50),
+                            side: BorderSide(
+                              color: _isNewAccount ? Colors.purple.shade400 : Colors.grey,
+                            ),
+                          ),
+                          child: const Text('Create Account'),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isNewAccount = false;
+                            });
+                            _showEmailInput();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E1E1E),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            minimumSize: const Size(double.infinity, 50),
+                            side: BorderSide(
+                              color: !_isNewAccount ? Colors.purple.shade400 : Colors.grey,
+                            ),
+                          ),
+                          child: const Text('I Have an Account'),
+                        ),
+                      ],
                     ),
-                    child: const Text('Create Account'),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isNewAccount = false;
-                      });
-                      _showEmailInput();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(
-                        color: !_isNewAccount ? Colors.purple.shade400 : Colors.grey,
-                      ),
-                    ),
-                    child: const Text('I Have an Account'),
                   ),
                 ] else if (!_showOtpField) ...[
                   TextField(
