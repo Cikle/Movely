@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:movely/theme.dart';
+import 'package:movely/screens/auth_screen.dart';
 import 'package:movely/screens/home_screen.dart';
+import 'package:movely/screens/onboarding_screen.dart';
 import 'package:movely/services/activity_service.dart';
 
 void main() async {
@@ -26,7 +28,42 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Movely',
       theme: movelyTheme,
-      home: HomeScreen(activityService: activityService),
+      home: StreamBuilder<AuthState>(
+        stream: Supabase.instance.client.auth.onAuthStateChange,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final session = snapshot.data!.session;
+            if (session != null) {
+              return FutureBuilder<bool>(
+                future: _checkOnboardingStatus(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasData && snapshot.data == true) {
+                    return HomeScreen(activityService: activityService);
+                  }
+                  return OnboardingScreen(activityService: activityService);
+                },
+              );
+            }
+          }
+          return AuthScreen(activityService: activityService);
+        },
+      ),
     );
+  }
+
+  Future<bool> _checkOnboardingStatus() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null) {
+      final response = await Supabase.instance.client
+          .from('users')
+          .select('onboarding_completed')
+          .eq('id', user.id)
+          .single();
+      return response['onboarding_completed'] ?? false;
+    }
+    return false;
   }
 }
