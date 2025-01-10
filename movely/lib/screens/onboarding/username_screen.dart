@@ -44,11 +44,11 @@ class _UsernameScreenState extends State<UsernameScreen> {
     }
     
     // Username validation rules:
-    // 1. Only letters, dots, and underscores
-    // 2. Dots cannot be at start or end
-    // 3. At least one character
-    final RegExp usernameRegex = RegExp(r'^[a-zA-Z_][a-zA-Z._]*[a-zA-Z_]$');
-    return usernameRegex.hasMatch(username);
+    // 1. Only letters, numbers, dots, and underscores
+    // 2. At least 3 characters
+    // 3. Must start and end with letter or number
+    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9._]{1,}[a-zA-Z0-9]$');
+    return username.length >= 3 && usernameRegex.hasMatch(username);
   }
 
   @override
