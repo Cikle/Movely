@@ -31,7 +31,33 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     });
 
     try {
-      await Supabase.instance.client.from('users').upsert({
+      // First check if user exists
+      final userId = Supabase.instance.client.auth.currentUser!.id;
+      final existingUser = await Supabase.instance.client
+          .from('users')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
+
+      // Use insert if user doesn't exist, update if they do
+      if (existingUser == null) {
+        await Supabase.instance.client.from('users').insert({
+          'id': userId,
+          'username': widget.username,
+          'display_name': widget.displayName,
+          'favorite_activities': widget.selectedActivities,
+          'discovery_source': _discoverySource,
+          'onboarding_completed': true,
+        });
+      } else {
+        await Supabase.instance.client.from('users').update({
+          'username': widget.username,
+          'display_name': widget.displayName,
+          'favorite_activities': widget.selectedActivities,
+          'discovery_source': _discoverySource,
+          'onboarding_completed': true,
+        }).eq('id', userId);
+      }
         'id': Supabase.instance.client.auth.currentUser!.id,
         'username': widget.username,
         'display_name': widget.displayName,

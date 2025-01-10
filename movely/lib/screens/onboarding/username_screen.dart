@@ -38,8 +38,17 @@ class _UsernameScreenState extends State<UsernameScreen> {
   }
 
   bool get _isValid {
-    return _usernameController.text.trim().isNotEmpty && 
-           _displayNameController.text.trim().isNotEmpty;
+    final username = _usernameController.text.trim();
+    if (username.isEmpty || _displayNameController.text.trim().isEmpty) {
+      return false;
+    }
+    
+    // Username validation rules:
+    // 1. Only letters, dots, and underscores
+    // 2. Dots cannot be at start or end
+    // 3. At least one character
+    final RegExp usernameRegex = RegExp(r'^[a-zA-Z_][a-zA-Z._]*[a-zA-Z_]$');
+    return usernameRegex.hasMatch(username);
   }
 
   @override
