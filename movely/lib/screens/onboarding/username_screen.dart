@@ -29,8 +29,9 @@ class _UsernameScreenState extends State<UsernameScreen> {
     super.dispose();
   }
 
-  bool get _isValid =>
-      _usernameController.text.isNotEmpty && _displayNameController.text.isNotEmpty;
+  bool get _isValid => 
+      _usernameController.text.trim().isNotEmpty && 
+      _displayNameController.text.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {

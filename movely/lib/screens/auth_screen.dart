@@ -96,7 +96,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xFF121212),
+        color: const Color(0xFF0A0A0A),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -109,7 +109,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   children: [
                     ShaderMask(
                       shaderCallback: (bounds) => LinearGradient(
-                        colors: [Colors.deepPurple.shade200, Colors.blue.shade300],
+                        colors: [
+                          Colors.deepPurple.shade200,
+                          Colors.blue.shade300
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ).createShader(bounds),
@@ -118,6 +121,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 48,
                             ),
                         textAlign: TextAlign.center,
                       ),
