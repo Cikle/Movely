@@ -1,65 +1,74 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>Login to Movely</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      color: #6200ea;
-      margin: 0;
-    }
-    .content {
-      margin-bottom: 30px;
-    }
-    .button {
-      display: inline-block;
-      padding: 15px 30px;
-      background-color: #6200ea;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      margin: 20px 0;
-    }
-    .footer {
-      text-align: center;
-      color: #666;
-      font-size: 12px;
-    }
-  </style>
+    <meta charset="utf-8">
+    <title>Login to Movely</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #6200ea;
+            margin: 0;
+        }
+
+        .content {
+            margin-bottom: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #6200ea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Movely</h1>
+    <div class="container">
+        <div class="header">
+            <h1>Movely</h1>
+        </div>
+        <div class="content">
+            <p>Hello!</p>
+            <p>Here's your login code for Movely:</p>
+            <h2 style="text-align: center; color: #6200ea;">{{ .Token }}</h2>
+            <p>This code will expire in 5 minutes.</p>
+            <p>If you didn't request this code, you can safely ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Movely. All rights reserved.</p>
+        </div>
     </div>
-    <div class="content">
-      <p>Hello!</p>
-      <p>Here's your login code for Movely:</p>
-      <h2 style="text-align: center; color: #6200ea;">{{ .Token }}</h2>
-      <p>This code will expire in 5 minutes.</p>
-      <p>If you didn't request this code, you can safely ignore this email.</p>
-    </div>
-    <div class="footer">
-      <p>© 2024 Movely. All rights reserved.</p>
-    </div>
-  </div>
 </body>
+
 </html>

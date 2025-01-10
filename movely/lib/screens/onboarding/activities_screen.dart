@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movely/screens/onboarding/discovery_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:movely/services/activity_service.dart';
 
 class ActivitiesScreen extends StatefulWidget {
