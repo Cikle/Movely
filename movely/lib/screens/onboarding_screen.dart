@@ -69,7 +69,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.purple.shade900, Colors.black],
+            colors: [Colors.blue.shade900, const Color(0xFF0A0A0A)],
           ),
         ),
         child: SafeArea(

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 final movelyTheme = ThemeData.dark().copyWith(
-  primaryColor: Colors.purple,
-  scaffoldBackgroundColor: const Color(0xFF1E1E1E),
+  primaryColor: Colors.blue,
+  scaffoldBackgroundColor: const Color(0xFF121212),
   appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.black,
+    backgroundColor: Color(0xFF0A0A0A),
     elevation: 0,
   ),
   buttonTheme: ButtonThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(18.0),
     ),
-    buttonColor: Colors.purple,
+    buttonColor: Colors.blue.shade700,
   ),
   textTheme: const TextTheme(
     bodyLarge: TextStyle(color: Colors.white),
