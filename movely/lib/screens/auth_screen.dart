@@ -139,12 +139,10 @@ class _AuthScreenState extends State<AuthScreen> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF28282B),
+                            backgroundColor: Colors.blue.shade400,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
-                            side: BorderSide(
-                              color: Colors.purple.shade400,
-                            ),
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -164,12 +162,10 @@ class _AuthScreenState extends State<AuthScreen> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF28282B),
+                            backgroundColor: Colors.grey.shade800,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
-                            side: BorderSide(
-                              color: Colors.purple.shade400,
-                            ),
+                            elevation: 2,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
