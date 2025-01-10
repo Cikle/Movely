@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movely/screens/auth_screen.dart';
 import 'package:movely/services/activity_service.dart';
 import 'package:movely/models/activity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -52,6 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
           TextButton(
             onPressed: () async {
               await Supabase.instance.client.auth.signOut();
+              if (mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => AuthScreen(
+                      activityService: widget.activityService,
+                    ),
+                  ),
+                  (route) => false,
+                );
+              }
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.grey[600],
