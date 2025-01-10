@@ -1,5 +1,5 @@
 name: movely
-description: "A new Flutter project."
+description: "A fitness tracking application with social features."
 publish_to: 'none'
 version: 0.1.0
 
@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  supabase_flutter: ^2.3.4
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:
