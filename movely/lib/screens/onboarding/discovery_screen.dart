@@ -89,33 +89,41 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                     ),
               ),
               const SizedBox(height: 32),
-              DropdownButtonFormField<String>(
-                value: _discoverySource,
-                onChanged: (value) {
-                  setState(() {
-                    _discoverySource = value;
-                  });
-                },
-                items: [
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
                   'App Store',
                   'Google Search',
                   'Friends/Family',
                   'Social Media',
                   'Other'
-                ]
-                    .map((source) =>
-                        DropdownMenuItem(value: source, child: Text(source)))
-                    .toList(),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                style: const TextStyle(color: Colors.white),
-                dropdownColor: const Color(0xFF1A1A1A),
+                ].map((source) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _discoverySource = source;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: _discoverySource == source
+                            ? Colors.deepPurple.shade400
+                            : Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        source,
+                        style: TextStyle(
+                          color: _discoverySource == source
+                              ? Colors.white
+                              : Colors.grey[400],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
               const Spacer(),
               ElevatedButton(

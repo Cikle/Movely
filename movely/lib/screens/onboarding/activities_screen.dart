@@ -64,25 +64,32 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                   'Dancing',
                   'Gym',
                 ].map((activity) {
-                  return FilterChip(
-                    label: Text(activity),
-                    selected: _selectedActivities.contains(activity),
-                    onSelected: (selected) {
+                  return GestureDetector(
+                    onTap: () {
                       setState(() {
-                        if (selected) {
-                          _selectedActivities.add(activity);
-                        } else {
+                        if (_selectedActivities.contains(activity)) {
                           _selectedActivities.remove(activity);
+                        } else {
+                          _selectedActivities.add(activity);
                         }
                       });
                     },
-                    backgroundColor: Colors.white.withOpacity(0.05),
-                    selectedColor: Colors.deepPurple.shade400,
-                    checkmarkColor: Colors.white,
-                    labelStyle: TextStyle(
-                      color: _selectedActivities.contains(activity)
-                          ? Colors.white
-                          : Colors.grey[400],
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: _selectedActivities.contains(activity)
+                            ? Colors.deepPurple.shade400
+                            : Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        activity,
+                        style: TextStyle(
+                          color: _selectedActivities.contains(activity)
+                              ? Colors.white
+                              : Colors.grey[400],
+                        ),
+                      ),
                     ),
                   );
                 }).toList(),
