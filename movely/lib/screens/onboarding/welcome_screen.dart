@@ -44,6 +44,16 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
               const Spacer(),
+              TextButton(
+                onPressed: () async {
+                  await Supabase.instance.client.auth.signOut();
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.grey[600],
+                ),
+                child: const Text('Sign Out (Debug)'),
+              ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(

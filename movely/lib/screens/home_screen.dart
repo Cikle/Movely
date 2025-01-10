@@ -48,6 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
+          TextButton(
+            onPressed: () async {
+              await Supabase.instance.client.auth.signOut();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[600],
+            ),
+            child: const Text('Sign Out (Debug)'),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
