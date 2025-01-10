@@ -46,4 +46,26 @@ class Activity {
       'gps_data': gpsData,
     };
   }
+
+  Activity copyWith({
+    String? id,
+    String? userId,
+    String? activityType,
+    DateTime? startTime,
+    DateTime? endTime,
+    double? distance,
+    int? duration,
+    Map<String, dynamic>? gpsData,
+  }) {
+    return Activity(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      activityType: activityType ?? this.activityType,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      distance: distance ?? this.distance,
+      duration: duration ?? this.duration,
+      gpsData: gpsData ?? this.gpsData,
+    );
+  }
 }
