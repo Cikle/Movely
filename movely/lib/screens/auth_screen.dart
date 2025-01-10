@@ -107,22 +107,46 @@ class _AuthScreenState extends State<AuthScreen> {
                 const Spacer(),
                 Column(
                   children: [
-                    Text(
-                      'Movely',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            color: Colors.deepPurple.shade200,
-                            fontWeight: FontWeight.bold,
-                          ),
-                      textAlign: TextAlign.center,
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [Colors.deepPurple.shade200, Colors.blue.shade300],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ).createShader(bounds),
+                      child: Text(
+                        'Movely',
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Track your progress. Stay active. Live better.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey.shade400,
-                            fontWeight: FontWeight.w300,
-                          ),
-                      textAlign: TextAlign.center,
+                    const SizedBox(height: 12),
+                    Column(
+                      children: [
+                        Text(
+                          'Track your progress.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey.shade400,
+                                fontWeight: FontWeight.w300,
+                              ),
+                        ),
+                        Text(
+                          'Stay active.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey.shade400,
+                                fontWeight: FontWeight.w300,
+                              ),
+                        ),
+                        Text(
+                          'Live better.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey.shade400,
+                                fontWeight: FontWeight.w300,
+                              ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

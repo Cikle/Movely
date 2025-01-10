@@ -64,11 +64,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      await Supabase.instance.client.auth.verifyOTP(
+      final AuthResponse response = await Supabase.instance.client.auth.verifyOTP(
         email: _emailController.text,
         token: _otpController.text,
-        type: OtpType.magiclink,
+        type: OtpType.signup,
       );
+      
+      if (response.session == null) {
+        throw Exception('Verification failed');
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${error.toString()}')),

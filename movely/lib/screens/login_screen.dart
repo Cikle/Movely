@@ -64,11 +64,15 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await Supabase.instance.client.auth.verifyOTP(
+      final AuthResponse response = await Supabase.instance.client.auth.verifyOTP(
         email: _emailController.text,
         token: _otpController.text,
-        type: OtpType.magiclink,
+        type: OtpType.signin,
       );
+      
+      if (response.session == null) {
+        throw Exception('Verification failed');
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${error.toString()}')),
