@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 final movelyTheme = ThemeData.dark().copyWith(
-  primaryColor: Colors.blue.shade400,
+  primaryColor: Colors.deepPurple.shade400,
   scaffoldBackgroundColor: const Color(0xFF121212),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color(0xFF0A0A0A),

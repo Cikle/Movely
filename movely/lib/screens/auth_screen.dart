@@ -105,20 +105,26 @@ class _AuthScreenState extends State<AuthScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                ShaderMask(
-                  shaderCallback: (bounds) => LinearGradient(
-                    colors: [Colors.purple.shade400, Colors.blue.shade400],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ).createShader(bounds),
-                  child: Text(
-                    'Movely',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
+                Column(
+                  children: [
+                    Text(
+                      'Movely',
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            color: Colors.deepPurple.shade200,
+                            fontWeight: FontWeight.bold,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Track your progress. Stay active. Live better.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey.shade400,
+                            fontWeight: FontWeight.w300,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
                 const Spacer(),
                 if (!_showOtpField && (_emailController.text.isEmpty)) ...[
@@ -139,7 +145,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue.shade400,
+                            backgroundColor: Colors.deepPurple.shade400,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             elevation: 4,
@@ -147,7 +153,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text('Create Account'),
+                          child: const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
@@ -170,7 +182,13 @@ class _AuthScreenState extends State<AuthScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text('I Have an Account'),
+                          child: const Text(
+                            'I Have an Account',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ],
                     ),
