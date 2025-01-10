@@ -40,10 +40,15 @@ class ActivityService {
   }
 
   Future<List<Activity>> getActivities() async {
+    final currentUser = _supabase.auth.currentUser;
+    if (currentUser == null) {
+      throw Exception('No user is currently logged in.');
+    }
+
     final response = await _supabase
         .from('activities')
         .select()
-        .eq('user_id', _supabase.auth.currentUser!.id)
+        .eq('user_id', currentUser.id)
         .order('start_time', ascending: false);
 
     return (response as List).map((json) => Activity.fromJson(json)).toList();
