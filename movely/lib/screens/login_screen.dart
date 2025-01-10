@@ -5,7 +5,8 @@ import 'package:movely/services/activity_service.dart';
 class LoginScreen extends StatefulWidget {
   final ActivityService activityService;
 
-  const LoginScreen({Key? key, required this.activityService}) : super(key: key);
+  const LoginScreen({Key? key, required this.activityService})
+      : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -45,7 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
         _showOtpField = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Check your email for the verification code!')),
+        const SnackBar(
+            content: Text('Check your email for the verification code!')),
       );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,12 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final AuthResponse response = await Supabase.instance.client.auth.verifyOTP(
+      final AuthResponse response =
+          await Supabase.instance.client.auth.verifyOTP(
         email: _emailController.text,
         token: _otpController.text,
-        type: OtpType.signin,
+        type: OtpType.magiclink,
       );
-      
+
       if (response.session == null) {
         throw Exception('Verification failed');
       }
@@ -101,9 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'Login',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -166,12 +169,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: _isLoading ? null : () {
-                    setState(() {
-                      _showOtpField = false;
-                      _otpController.clear();
-                    });
-                  },
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          setState(() {
+                            _showOtpField = false;
+                            _otpController.clear();
+                          });
+                        },
                   child: const Text('Use different email'),
                 ),
               ],
