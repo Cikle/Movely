@@ -58,13 +58,6 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
           'onboarding_completed': true,
         }).eq('id', userId);
       }
-        'id': Supabase.instance.client.auth.currentUser!.id,
-        'username': widget.username,
-        'display_name': widget.displayName,
-        'favorite_activities': widget.selectedActivities,
-        'discovery_source': _discoverySource,
-        'onboarding_completed': true,
-      });
 
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
