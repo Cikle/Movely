@@ -66,16 +66,17 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final AuthResponse response = await Supabase.instance.client.auth.verifyOTP(
+      final AuthResponse response =
+          await Supabase.instance.client.auth.verifyOTP(
         email: _emailController.text,
         token: _otpController.text,
-        type: OtpType.signin,
+        type: OtpType.magiclink,
       );
 
       if (response.session == null) {
         throw Exception('Verification failed');
       }
-      
+
       // Wait a moment for the session to be properly established
       await Future.delayed(const Duration(milliseconds: 500));
     } catch (error) {
@@ -142,7 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text('Continue'),
@@ -178,7 +180,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text('Verify Code'),
