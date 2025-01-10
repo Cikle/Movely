@@ -11,6 +11,7 @@ final movelyTheme = ThemeData.dark().copyWith(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.deepPurple.shade400,
+      foregroundColor: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 16),
       minimumSize: const Size(double.infinity, 50),
       elevation: 4,

@@ -38,7 +38,16 @@ class MainApp extends StatelessWidget {
                 future: _checkOnboardingStatus(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Center(
+                      child: SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    );
                   }
                   if (snapshot.hasData && snapshot.data == true) {
                     return HomeScreen(activityService: activityService);
