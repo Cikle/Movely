@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:movely/services/activity_service.dart';
+import 'package:movely/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final ActivityService activityService;
@@ -79,6 +80,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Wait a moment for the session to be properly established
       await Future.delayed(const Duration(milliseconds: 500));
+      
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              activityService: widget.activityService,
+            ),
+          ),
+          (route) => false,
+        );
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${error.toString()}')),
