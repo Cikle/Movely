@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:movely/screens/onboarding/username_screen.dart';
 import 'package:movely/services/activity_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final ActivityService activityService;
 
-  const WelcomeScreen({Key? key, required this.activityService}) : super(key: key);
+  const WelcomeScreen({Key? key, required this.activityService})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +24,20 @@ class WelcomeScreen extends StatelessWidget {
                 children: [
                   ShaderMask(
                     shaderCallback: (bounds) => LinearGradient(
-                      colors: [Colors.deepPurple.shade200, Colors.blue.shade300],
+                      colors: [
+                        Colors.deepPurple.shade200,
+                        Colors.blue.shade300
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ).createShader(bounds),
                     child: Text(
                       'Welcome to Movely!',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                   ),
                   const SizedBox(height: 16),

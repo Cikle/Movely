@@ -1,4 +1,3 @@
-
 class Activity {
   final String id;
   final String userId;
@@ -27,7 +26,7 @@ class Activity {
       activityType: json['activity_type'],
       startTime: DateTime.parse(json['start_time']),
       endTime: DateTime.parse(json['end_time']),
-      distance: json['distance'],
+      distance: (json['distance'] as num).toDouble(),
       duration: json['duration'],
       gpsData: json['gps_data'],
     );
