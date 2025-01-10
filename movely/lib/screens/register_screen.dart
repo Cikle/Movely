@@ -75,6 +75,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         throw Exception('Verification failed');
       }
 
+      // Wait a moment for the session to be properly established
+      await Future.delayed(const Duration(milliseconds: 500));
+
       // Navigate to onboarding after successful verification
       if (mounted) {
         Navigator.of(context).pushReplacement(
