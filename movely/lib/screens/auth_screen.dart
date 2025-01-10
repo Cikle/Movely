@@ -16,15 +16,16 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   bool _isLoading = false;
+  bool _isNewAccount = true;
+  final _otpController = TextEditingController();
+  bool _showOtpField = false;
 
   @override
   void dispose() {
     _emailController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
-
-  final _otpController = TextEditingController();
-  bool _showOtpField = false;
 
   Future<void> _signIn() async {
     if (_showOtpField) {
@@ -100,13 +101,20 @@ class _AuthScreenState extends State<AuthScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Movely',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: [Colors.purple.shade400, Colors.blue.shade400],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds),
+                  child: Text(
+                    'Movely',
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
                 TextField(
@@ -151,8 +159,49 @@ class _AuthScreenState extends State<AuthScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    backgroundColor: const Color(0xFF1E1E1E),
                   ),
                 ),
+                const SizedBox(height: 24),
+                if (!_showOtpField) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isNewAccount = true;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isNewAccount ? const Color(0xFF1E1E1E) : Colors.transparent,
+                            side: BorderSide(
+                              color: _isNewAccount ? Colors.purple.shade400 : Colors.grey,
+                            ),
+                          ),
+                          child: const Text('Create Account'),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isNewAccount = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: !_isNewAccount ? const Color(0xFF1E1E1E) : Colors.transparent,
+                            side: BorderSide(
+                              color: !_isNewAccount ? Colors.purple.shade400 : Colors.grey,
+                            ),
+                          ),
+                          child: const Text('I Have an Account'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 if (_showOtpField) ...[
                   const SizedBox(height: 8),
                   TextButton(
