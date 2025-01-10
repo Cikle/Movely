@@ -1,0 +1,160 @@
+import 'package:flutter/material.dart';
+import 'package:movely/screens/home_screen.dart';
+import 'package:movely/services/activity_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class DiscoveryScreen extends StatefulWidget {
+  final ActivityService activityService;
+  final String username;
+  final String displayName;
+  final List<String> selectedActivities;
+
+  const DiscoveryScreen({
+    Key? key,
+    required this.activityService,
+    required this.username,
+    required this.displayName,
+    required this.selectedActivities,
+  }) : super(key: key);
+
+  @override
+  _DiscoveryScreenState createState() => _DiscoveryScreenState();
+}
+
+class _DiscoveryScreenState extends State<DiscoveryScreen> {
+  String? _discoverySource;
+  bool _isLoading = false;
+
+  Future<void> _completeOnboarding() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await Supabase.instance.client.from('users').upsert({
+        'id': Supabase.instance.client.auth.currentUser!.id,
+        'username': widget.username,
+        'display_name': widget.displayName,
+        'favorite_activities': widget.selectedActivities,
+        'discovery_source': _discoverySource,
+        'onboarding_completed': true,
+      });
+
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) =>
+                HomeScreen(activityService: widget.activityService),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${error.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0A0A0A),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'One last thing...',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'How did you find us?',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[400],
+                    ),
+              ),
+              const SizedBox(height: 32),
+              DropdownButtonFormField<String>(
+                value: _discoverySource,
+                onChanged: (value) {
+                  setState(() {
+                    _discoverySource = value;
+                  });
+                },
+                items: [
+                  'App Store',
+                  'Google Search',
+                  'Friends/Family',
+                  'Social Media',
+                  'Other'
+                ]
+                    .map((source) =>
+                        DropdownMenuItem(value: source, child: Text(source)))
+                    .toList(),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.05),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                dropdownColor: const Color(0xFF1A1A1A),
+              ),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: _discoverySource != null && !_isLoading
+                    ? _completeOnboarding
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple.shade400,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: const Size(double.infinity, 50),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text(
+                        'Complete Setup',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () async {
+                  await Supabase.instance.client.auth.signOut();
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.grey[600],
+                ),
+                child: const Text('Sign Out (Debug)'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
