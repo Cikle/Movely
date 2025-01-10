@@ -20,6 +20,14 @@ class _UsernameScreenState extends State<UsernameScreen> {
   void initState() {
     super.initState();
     _usernameController.text = Supabase.instance.client.auth.currentUser?.email?.split('@')[0] ?? '';
+    
+    // Add listeners to update state when text changes
+    _usernameController.addListener(() {
+      setState(() {});
+    });
+    _displayNameController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -29,9 +37,10 @@ class _UsernameScreenState extends State<UsernameScreen> {
     super.dispose();
   }
 
-  bool get _isValid => 
-      _usernameController.text.trim().isNotEmpty && 
-      _displayNameController.text.trim().isNotEmpty;
+  bool get _isValid {
+    return _usernameController.text.trim().isNotEmpty && 
+           _displayNameController.text.trim().isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
