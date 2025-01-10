@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:movely/models/activity.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
+import 'dart:async';
+import 'package:movely/models/activity.dart';
 
 class ActivityService {
-  final SupabaseClient _supabase = Supabase.instance.client;
   Activity? _currentActivity;
+  final List<Activity> _activities = [];
 
   Future<void> startActivity(String activityType) async {
     if (_currentActivity != null) {
@@ -13,8 +13,8 @@ class ActivityService {
     }
 
     _currentActivity = Activity(
-      id: const Uuid().v4(),
-      userId: _supabase.auth.currentUser!.id,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      userId: 'local-user',
       activityType: activityType,
       startTime: DateTime.now(),
       endTime: DateTime.now(), // Will be updated when stopping
@@ -40,30 +40,10 @@ class ActivityService {
   }
 
   Future<List<Activity>> getActivities() async {
-    final response = await _supabase
-        .from('activities')
-        .select()
-        .eq('user_id', _supabase.auth.currentUser!.id)
-        .order('start_time', ascending: false)
-        .execute();
-
-    if (response.error != null) {
-      throw response.error!;
-    }
-
-    return (response.data as List)
-        .map((json) => Activity.fromJson(json))
-        .toList();
+    return _activities;
   }
 
   Future<void> saveActivity(Activity activity) async {
-    final response = await _supabase
-        .from('activities')
-        .insert(activity.toJson())
-        .execute();
-
-    if (response.error != null) {
-      throw response.error!;
-    }
+    _activities.add(activity);
   }
 }
