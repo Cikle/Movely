@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:movely/services/activity_service.dart';
+import 'package:movely/screens/onboarding_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   final ActivityService activityService;
@@ -72,6 +73,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
       
       if (response.session == null) {
         throw Exception('Verification failed');
+      }
+
+      // Navigate to onboarding after successful verification
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => OnboardingScreen(
+              activityService: widget.activityService,
+            ),
+          ),
+        );
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
