@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:movely/screens/onboarding_screen.dart';
-import 'package:movely/screens/home_screen.dart';
+import 'package:movely/screens/login_screen.dart';
+import 'package:movely/screens/register_screen.dart';
 import 'package:movely/services/activity_service.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -95,7 +94,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xFF1E1E1E),
+        color: const Color(0xFF28282B),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -128,17 +127,24 @@ class _AuthScreenState extends State<AuthScreen> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              _isNewAccount = true;
-                            });
-                            _showEmailInput();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen(
+                                  activityService: widget.activityService,
+                                ),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E1E1E),
+                            backgroundColor: const Color(0xFF28282B),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             side: BorderSide(
-                              color: _isNewAccount ? Colors.purple.shade400 : Colors.grey,
+                              color: Colors.purple.shade400,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: const Text('Create Account'),
@@ -146,91 +152,30 @@ class _AuthScreenState extends State<AuthScreen> {
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              _isNewAccount = false;
-                            });
-                            _showEmailInput();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(
+                                  activityService: widget.activityService,
+                                ),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E1E1E),
+                            backgroundColor: const Color(0xFF28282B),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             minimumSize: const Size(double.infinity, 50),
                             side: BorderSide(
-                              color: !_isNewAccount ? Colors.purple.shade400 : Colors.grey,
+                              color: Colors.purple.shade400,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: const Text('I Have an Account'),
                         ),
                       ],
                     ),
-                  ),
-                ] else if (!_showOtpField) ...[
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter your email',
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _signIn,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: Colors.purple.shade400),
-                    ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('Send Code'),
-                  ),
-                ] else ...[
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _otpController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter verification code',
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: const TextStyle(color: Colors.white),
-                    keyboardType: TextInputType.number,
-                  ),
-                ],
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : _signIn,
-                  child: _isLoading
-                      ? const CircularProgressIndicator()
-                      : Text(_showOtpField ? 'Verify Code' : 'Send Code'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    backgroundColor: const Color(0xFF1E1E1E),
-                  ),
-                ),
-                if (_showOtpField) ...[
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: _isLoading ? null : () {
-                      setState(() {
-                        _showOtpField = false;
-                        _otpController.clear();
-                      });
-                    },
-                    child: const Text('Use different email'),
                   ),
                 ],
               ],
