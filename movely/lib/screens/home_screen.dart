@@ -71,97 +71,100 @@ class _HomeScreenState extends State<HomeScreen> {
         onRefresh: _loadActivities,
         child: Column(
           children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Today\'s Steps',
-                      style: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 14,
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Today\'s Steps',
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _steps.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 4),
+                      Text(
+                        _steps.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Icon(
-                  Icons.directions_walk,
-                  color: Colors.deepPurple.shade400,
-                  size: 32,
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              await Supabase.instance.client.auth.signOut();
-              if (mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => AuthScreen(
-                      activityService: widget.activityService,
-                    ),
+                    ],
                   ),
-                  (route) => false,
-                );
-              }
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.grey[600],
+                  Icon(
+                    Icons.directions_walk,
+                    color: Colors.deepPurple.shade400,
+                    size: 32,
+                  ),
+                ],
+              ),
             ),
-            child: const Text('Sign Out (Debug)'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Text(
-                  _isTracking
-                      ? 'Tracking activity...'
-                      : 'Start tracking your activity!',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _toggleTracking,
-                  child: Text(_isTracking ? 'Stop Tracking' : 'Start Tracking'),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _activities.length,
-              itemBuilder: (context, index) {
-                final activity = _activities[index];
-                return ListTile(
-                  title: Text(
-                      '${activity.activityType} - ${activity.duration} seconds'),
-                  subtitle: Text(
-                      '${activity.startTime.toString()} - ${activity.endTime.toString()}'),
-                );
+            TextButton(
+              onPressed: () async {
+                await Supabase.instance.client.auth.signOut();
+                if (mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => AuthScreen(
+                        activityService: widget.activityService,
+                      ),
+                    ),
+                    (route) => false,
+                  );
+                }
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey[600],
+              ),
+              child: const Text('Sign Out (Debug)'),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    _isTracking
+                        ? 'Tracking activity...'
+                        : 'Start tracking your activity!',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _toggleTracking,
+                    child:
+                        Text(_isTracking ? 'Stop Tracking' : 'Start Tracking'),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _activities.length,
+                itemBuilder: (context, index) {
+                  final activity = _activities[index];
+                  return ListTile(
+                    title: Text(
+                        '${activity.activityType} - ${activity.duration} seconds'),
+                    subtitle: Text(
+                        '${activity.startTime.toString()} - ${activity.endTime.toString()}'),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
