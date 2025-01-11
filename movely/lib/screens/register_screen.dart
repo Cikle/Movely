@@ -63,6 +63,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
+      // Check if email exists
+      final existingUser = await Supabase.instance.client.auth
+          .admin.listUsers(
+              filter: 'email eq ${_emailController.text}');
+      
+      if (existingUser != null) {
+        throw Exception('Email already registered');
+      }
+
       // Check if username exists
       try {
         final usernameExists = await Supabase.instance.client

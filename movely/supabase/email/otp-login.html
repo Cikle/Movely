@@ -61,8 +61,19 @@
         <div class="content">
             <p>Hello!</p>
             <p>Here's your login code for Movely:</p>
-            <div style="text-align: center; background-color: #1a1a1a; padding: 20px; border-radius: 8px; margin: 20px 0; cursor: pointer;" onclick="navigator.clipboard.writeText('{{ .Token }}')">
-                <h2 style="color: #9575cd; font-size: 32px; margin: 0; user-select: all;">{{ .Token }}</h2>
+            <div style="text-align: center; background-color: #1a1a1a; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <input type="text" value="{{ .Token }}" readonly 
+                    style="background: none; border: none; color: #9575cd; font-size: 32px; text-align: center; width: 100%; outline: none; cursor: pointer;"
+                    onclick="this.select(); navigator.clipboard.writeText(this.value); 
+                            let msg = document.createElement('div');
+                            msg.textContent = 'Copied!';
+                            msg.style.position = 'absolute';
+                            msg.style.left = '50%';
+                            msg.style.transform = 'translateX(-50%)';
+                            msg.style.color = '#666';
+                            msg.style.fontSize = '12px';
+                            this.parentElement.appendChild(msg);
+                            setTimeout(() => msg.remove(), 1000);">
                 <p style="color: #666; font-size: 12px; margin-top: 8px;">Click to copy</p>
             </div>
             <p>This code will expire in 5 minutes.</p>
