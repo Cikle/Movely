@@ -18,6 +18,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _otpController = TextEditingController();
   bool _isLoading = false;
   bool _showOtpField = false;
+  bool _canResendCode = true;
+  int _resendTimer = 30;
+  Timer? _timer;
 
   @override
   void dispose() {
@@ -34,15 +37,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  void _startResendTimer() {
+    setState(() {
+      _canResendCode = false;
+      _resendTimer = 30;
+    });
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_resendTimer > 0) {
+          _resendTimer--;
+        } else {
+          _canResendCode = true;
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _otpController.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
+
   Future<void> _requestOtp() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
+      // Check if user exists
+      final data = await Supabase.instance.client
+          .from('users')
+          .select()
+          .eq('id', (await Supabase.instance.client.auth.getUser()).user?.id)
+          .single();
+      
+      if (data != null) {
+        throw Exception('Account already exists');
+      }
+
+      // Check if username exists
+      final usernameExists = await Supabase.instance.client
+          .from('users')
+          .select()
+          .eq('username', _emailController.text.split('@')[0])
+          .single();
+      
+      if (usernameExists != null) {
+        throw Exception('Username already taken');
+      }
+
       await Supabase.instance.client.auth.signInWithOtp(
         email: _emailController.text,
       );
+      _startResendTimer();
       setState(() {
         _showOtpField = true;
       });
@@ -51,8 +103,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             content: Text('Check your email for the verification code!')),
       );
     } catch (error) {
+      String errorMessage = 'An error occurred. Please try again later.';
+      if (error.toString().contains('Account already exists')) {
+        errorMessage = 'An account with this email already exists';
+      } else if (error.toString().contains('Username already taken')) {
+        errorMessage = 'This username is already taken';
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${error.toString()}')),
+        SnackBar(content: Text(errorMessage)),
       );
     } finally {
       setState(() {
@@ -164,8 +222,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ] else ...[
                 TextField(
                   controller: _otpController,
+                  maxLength: 6,
+                  onChanged: (value) {
+                    if (value.length == 6) {
+                      _register();
+                    }
+                  },
                   decoration: InputDecoration(
-                    hintText: 'Enter verification code',
+                    hintText: 'Enter 6-digit verification code',
+                    counterText: '',
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.1),
                     border: OutlineInputBorder(
