@@ -63,16 +63,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      // Check if email exists
-      final existingUser = await Supabase.instance.client
-          .from('users')
-          .select()
-          .eq('email', _emailController.text)
-          .single();
-
-      if (existingUser != null) {
-        throw Exception('Email already registered');
-      }
 
       // Check if username exists
       try {
@@ -101,11 +91,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             content: Text('Check your email for the verification code!')),
       );
     } catch (error) {
-      String errorMessage = 'An error occurred. Please try again later.';
-      if (error.toString().contains('Account already exists')) {
+      String errorMessage = error.toString();
+      if (error.toString().contains('User already registered')) {
         errorMessage = 'An account with this email already exists';
       } else if (error.toString().contains('Username already taken')) {
         errorMessage = 'This username is already taken';
+      } else {
+        print('Registration error: $error'); // For debugging
+        errorMessage = 'An error occurred. Please try again later.';
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
