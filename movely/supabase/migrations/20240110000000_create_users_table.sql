@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS public.users (
     onboarding_completed BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    daily_steps INTEGER DEFAULT 0
+    daily_steps INTEGER DEFAULT 0,
+    total_steps INTEGER DEFAULT 0,
+    step_history JSONB DEFAULT '{"days": []}'::jsonb
 );
 
 -- Create RLS policies

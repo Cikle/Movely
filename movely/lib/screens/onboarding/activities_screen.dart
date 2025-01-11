@@ -58,11 +58,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                   'Running',
                   'Walking',
                   'Cycling',
-                  'Swimming',
-                  'Yoga',
                   'Hiking',
-                  'Dancing',
-                  'Gym',
                 ].map((activity) {
                   return GestureDetector(
                     onTap: () {

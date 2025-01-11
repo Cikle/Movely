@@ -5,18 +5,31 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class StepService {
   Stream<StepCount>? _stepCountStream;
   StreamSubscription<StepCount>? _stepCountSubscription;
+  Timer? _smoothUpdateTimer;
   int _steps = 0;
   int _initialSteps = 0;
+  int _displaySteps = 0;
   bool _isInitialized = false;
   final _stepsController = StreamController<int>.broadcast();
 
   Stream<int> get stepStream => _stepsController.stream;
   int get steps => _isInitialized ? _steps - _initialSteps : 0;
+  int get displaySteps => _displaySteps;
 
   Future<void> initializePedometer() async {
     _isInitialized = false;
     _steps = 0;
     _initialSteps = 0;
+    _displaySteps = 0;
+
+    // Start smooth update timer
+    _smoothUpdateTimer?.cancel();
+    _smoothUpdateTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (_displaySteps < steps) {
+        _displaySteps = _displaySteps + 1;
+        _stepsController.add(_displaySteps);
+      }
+    });
     _stepCountStream = Pedometer.stepCountStream;
     
     _stepCountSubscription?.cancel();
@@ -40,9 +53,45 @@ class StepService {
     try {
       final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
+        final now = DateTime.now().toUtc();
+        final today = DateTime(now.year, now.month, now.day).toIso8601String();
+        
+        // Get current user data
+        final userData = await Supabase.instance.client
+            .from('users')
+            .select('step_history, total_steps')
+            .eq('id', userId)
+            .single();
+        
+        var stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+        
+        // Update or add today's entry
+        bool foundToday = false;
+        for (var i = 0; i < stepHistory.length; i++) {
+          if (stepHistory[i]['date'] == today) {
+            stepHistory[i]['steps'] = steps;
+            foundToday = true;
+            break;
+          }
+        }
+        
+        if (!foundToday) {
+          stepHistory.add({'date': today, 'steps': steps});
+        }
+        
+        // Keep only last 7 days
+        if (stepHistory.length > 7) {
+          stepHistory = stepHistory.sublist(stepHistory.length - 7);
+        }
+        
+        // Calculate average steps
+        int totalSteps = userData['total_steps'] ?? 0;
+        
         await Supabase.instance.client.from('users').update({
           'daily_steps': steps,
-          'updated_at': DateTime.now().toIso8601String(),
+          'total_steps': totalSteps + 1,
+          'step_history': {'days': stepHistory},
+          'updated_at': now.toIso8601String(),
         }).eq('id', userId);
       }
     } catch (e) {
@@ -52,6 +101,7 @@ class StepService {
 
   void dispose() {
     _stepCountSubscription?.cancel();
+    _smoothUpdateTimer?.cancel();
     _stepsController.close();
   }
 }

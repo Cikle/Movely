@@ -19,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Activity> _activities = [];
   final StepService _stepService = StepService();
   int _steps = 0;
+  int _totalSteps = 0;
+  double _averageSteps = 0;
 
   @override
   void initState() {
@@ -34,6 +36,34 @@ class _HomeScreenState extends State<HomeScreen> {
         _steps = steps;
       });
     });
+    await _loadStepStats();
+  }
+
+  Future<void> _loadStepStats() async {
+    try {
+      final userId = Supabase.instance.client.auth.currentUser?.id;
+      if (userId != null) {
+        final userData = await Supabase.instance.client
+            .from('users')
+            .select('step_history, total_steps')
+            .eq('id', userId)
+            .single();
+        
+        final stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+        
+        if (stepHistory.isNotEmpty) {
+          final totalHistorySteps = stepHistory.fold<int>(
+            0, (sum, day) => sum + (day['steps'] as int));
+          _averageSteps = totalHistorySteps / stepHistory.length;
+        }
+        
+        setState(() {
+          _totalSteps = userData['total_steps'] ?? 0;
+        });
+      }
+    } catch (e) {
+      print('Error loading step stats: $e');
+    }
   }
 
   @override
@@ -71,10 +101,75 @@ class _HomeScreenState extends State<HomeScreen> {
         onRefresh: _loadActivities,
         child: Column(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Today',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _steps.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '7-Day Avg',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _averageSteps.toStringAsFixed(0),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Container(
               padding: const EdgeInsets.all(16.0),
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(12),
@@ -86,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Today\'s Steps',
+                        'Total Steps',
                         style: TextStyle(
                           color: Colors.grey[400],
                           fontSize: 14,
@@ -94,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _steps.toString(),
+                        _totalSteps.toString(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
