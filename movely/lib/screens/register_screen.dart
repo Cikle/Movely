@@ -6,7 +6,8 @@ import 'package:movely/screens/onboarding_screen.dart';
 class RegisterScreen extends StatefulWidget {
   final ActivityService activityService;
 
-  const RegisterScreen({Key? key, required this.activityService}) : super(key: key);
+  const RegisterScreen({Key? key, required this.activityService})
+      : super(key: key);
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -46,7 +47,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _showOtpField = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Check your email for the verification code!')),
+        const SnackBar(
+            content: Text('Check your email for the verification code!')),
       );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -65,12 +67,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      final AuthResponse response = await Supabase.instance.client.auth.verifyOTP(
+      final AuthResponse response =
+          await Supabase.instance.client.auth.verifyOTP(
         email: _emailController.text,
         token: _otpController.text,
         type: OtpType.signup,
       );
-      
+
       if (response.session == null) {
         throw Exception('Verification failed');
       }
@@ -116,9 +119,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Text(
                 'Create Account',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -152,7 +155,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text('Continue'),
@@ -188,19 +192,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text('Verify Code'),
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: _isLoading ? null : () {
-                    setState(() {
-                      _showOtpField = false;
-                      _otpController.clear();
-                    });
-                  },
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          setState(() {
+                            _showOtpField = false;
+                            _otpController.clear();
+                          });
+                        },
                   child: const Text('Use different email'),
                 ),
               ],
