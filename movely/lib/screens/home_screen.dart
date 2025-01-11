@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: _loadActivities,
         child: Column(
-        children: [
+          children: [
           Container(
             padding: const EdgeInsets.all(16.0),
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
