@@ -49,7 +49,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
           'username': widget.username,
           'display_name': widget.displayName,
           'favorite_activities': widget.selectedActivities,
-          'age_bracket': widget.ageBracket,
+          'age_bracket': widget.ageBracket.toString(),
           'discovery_source': _discoverySource,
           'onboarding_completed': true,
         });

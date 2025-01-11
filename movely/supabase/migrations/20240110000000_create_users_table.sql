@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     username TEXT UNIQUE NOT NULL,
     display_name TEXT NOT NULL,
     favorite_activities TEXT[] NOT NULL DEFAULT '{}',
-    age_bracket TEXT CHECK (age_bracket IN ('Under 18', '18-24', '25-34', '35-44', '45-54', '55-64', '65+')),
+    "age_bracket" TEXT CHECK ("age_bracket" IN ('Under 18', '18-24', '25-34', '35-44', '45-54', '55-64', '65+')),
     discovery_source TEXT,
     onboarding_completed BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
