@@ -63,18 +63,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-
       // Check if username exists
       try {
-        final usernameExists = await Supabase.instance.client
+        await Supabase.instance.client
             .from('users')
             .select()
             .eq('username', _emailController.text.split('@')[0])
             .single();
 
-        if (usernameExists != null) {
-          throw Exception('Username already taken');
-        }
+        // If we get here, the username exists
+        throw Exception('Username already taken');
       } catch (e) {
         // If no user found, single() throws an error, which is what we want
       }
@@ -287,6 +285,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           });
                         },
                   child: const Text('Use different email'),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed:
+                      (_canResendCode && !_isLoading) ? _requestOtp : null,
+                  child: Text(_canResendCode
+                      ? 'Resend code'
+                      : 'Resend code in $_resendTimer seconds'),
                 ),
               ],
             ],

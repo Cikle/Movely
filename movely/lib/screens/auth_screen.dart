@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:movely/screens/login_screen.dart';
 import 'package:movely/screens/register_screen.dart';
 import 'package:movely/services/activity_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthScreen extends StatefulWidget {
   final ActivityService activityService;
@@ -15,81 +14,14 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
-  bool _isLoading = false;
-  final bool _isNewAccount = true;
   final _otpController = TextEditingController();
   bool _showOtpField = false;
-
-  void _showEmailInput() {
-    setState(() {
-      _emailController.clear();
-      _otpController.clear();
-      _showOtpField = false;
-    });
-  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _otpController.dispose();
     super.dispose();
-  }
-
-  Future<void> _signIn() async {
-    if (_showOtpField) {
-      await _verifyOtp();
-    } else {
-      await _requestOtp();
-    }
-  }
-
-  Future<void> _requestOtp() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await Supabase.instance.client.auth.signInWithOtp(
-        email: _emailController.text,
-      );
-      setState(() {
-        _showOtpField = true;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Check your email for the verification code!')),
-      );
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${error.toString()}')),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _verifyOtp() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await Supabase.instance.client.auth.verifyOTP(
-        email: _emailController.text,
-        token: _otpController.text,
-        type: OtpType.magiclink,
-      );
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${error.toString()}')),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
