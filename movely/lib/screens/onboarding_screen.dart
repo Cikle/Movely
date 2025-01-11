@@ -5,8 +5,7 @@ import 'package:movely/services/activity_service.dart';
 class OnboardingScreen extends StatelessWidget {
   final ActivityService activityService;
 
-  const OnboardingScreen({Key? key, required this.activityService})
-      : super(key: key);
+  const OnboardingScreen({super.key, required this.activityService});
 
   @override
   Widget build(BuildContext context) {

@@ -6,8 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class WelcomeScreen extends StatelessWidget {
   final ActivityService activityService;
 
-  const WelcomeScreen({Key? key, required this.activityService})
-      : super(key: key);
+  const WelcomeScreen({super.key, required this.activityService});
 
   @override
   Widget build(BuildContext context) {

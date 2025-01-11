@@ -6,7 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class UsernameScreen extends StatefulWidget {
   final ActivityService activityService;
 
-  const UsernameScreen({Key? key, required this.activityService}) : super(key: key);
+  const UsernameScreen({Key? key, required this.activityService})
+      : super(key: key);
 
   @override
   _UsernameScreenState createState() => _UsernameScreenState();
@@ -19,8 +20,9 @@ class _UsernameScreenState extends State<UsernameScreen> {
   @override
   void initState() {
     super.initState();
-    _usernameController.text = Supabase.instance.client.auth.currentUser?.email?.split('@')[0] ?? '';
-    
+    _usernameController.text =
+        Supabase.instance.client.auth.currentUser?.email?.split('@')[0] ?? '';
+
     // Add listeners to update state when text changes
     _usernameController.addListener(() {
       setState(() {});
@@ -42,12 +44,13 @@ class _UsernameScreenState extends State<UsernameScreen> {
     if (username.isEmpty || _displayNameController.text.trim().isEmpty) {
       return false;
     }
-    
+
     // Username validation rules:
     // 1. Only letters, numbers, dots, and underscores
     // 2. At least 3 characters
     // 3. Must start and end with letter or number
-    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9._]{1,}[a-zA-Z0-9]$');
+    final RegExp usernameRegex =
+        RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9._]{1,}[a-zA-Z0-9]$');
     return username.length >= 3 && usernameRegex.hasMatch(username);
   }
 

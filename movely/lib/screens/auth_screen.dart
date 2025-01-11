@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthScreen extends StatefulWidget {
   final ActivityService activityService;
 
-  const AuthScreen({Key? key, required this.activityService}) : super(key: key);
+  const AuthScreen({super.key, required this.activityService});
 
   @override
   _AuthScreenState createState() => _AuthScreenState();
@@ -16,7 +16,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   bool _isLoading = false;
-  bool _isNewAccount = true;
+  final bool _isNewAccount = true;
   final _otpController = TextEditingController();
   bool _showOtpField = false;
 
@@ -118,11 +118,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       ).createShader(bounds),
                       child: Text(
                         'Movely',
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 48,
+                                ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -131,24 +132,27 @@ class _AuthScreenState extends State<AuthScreen> {
                       children: [
                         Text(
                           'Track your progress.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey.shade400,
-                                fontWeight: FontWeight.w300,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey.shade400,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                         ),
                         Text(
                           'Stay active.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey.shade400,
-                                fontWeight: FontWeight.w300,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey.shade400,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                         ),
                         Text(
                           'Live better.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey.shade400,
-                                fontWeight: FontWeight.w300,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey.shade400,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                         ),
                       ],
                     ),

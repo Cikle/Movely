@@ -10,13 +10,12 @@ class DiscoveryScreen extends StatefulWidget {
   final List<String> selectedActivities;
 
   const DiscoveryScreen({
-    Key? key,
+    super.key,
     required this.activityService,
     required this.username,
     required this.displayName,
     required this.selectedActivities,
-  }) : super(key: key);
-
+  });
 
   @override
   _DiscoveryScreenState createState() => _DiscoveryScreenState();
@@ -126,7 +125,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: _discoverySource == source
                             ? Colors.deepPurple.shade400
@@ -165,7 +165,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : const Text(

@@ -9,11 +9,11 @@ class ActivitiesScreen extends StatefulWidget {
   final String displayName;
 
   const ActivitiesScreen({
-    Key? key,
+    super.key,
     required this.activityService,
     required this.username,
     required this.displayName,
-  }) : super(key: key);
+  });
 
   @override
   _ActivitiesScreenState createState() => _ActivitiesScreenState();
@@ -71,7 +71,8 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: _selectedActivities.contains(activity)
                             ? Colors.deepPurple.shade400
