@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     discovery_source TEXT,
     onboarding_completed BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    daily_steps INTEGER DEFAULT 0
 );
 
 -- Create RLS policies

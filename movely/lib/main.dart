@@ -15,6 +15,7 @@ void main() async {
   );
 
   final activityService = ActivityService();
+  await Permission.activityRecognition.request(); // Add permission request
   runApp(MainApp(activityService: activityService));
 }
 
