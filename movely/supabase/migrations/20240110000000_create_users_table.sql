@@ -14,17 +14,17 @@ CREATE TABLE IF NOT EXISTS public.users (
 -- Create RLS policies
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can read their own data"
+CREATE POLICY IF NOT EXISTS "Users can read their own data"
     ON public.users
     FOR SELECT
     USING (auth.uid() = id);
 
-CREATE POLICY "Users can update their own data"
+CREATE POLICY IF NOT EXISTS "Users can update their own data"
     ON public.users
     FOR UPDATE
     USING (auth.uid() = id);
 
-CREATE POLICY "Users can insert their own data"
+CREATE POLICY IF NOT EXISTS "Users can insert their own data"
     ON public.users
     FOR INSERT
     WITH CHECK (auth.uid() = id);
