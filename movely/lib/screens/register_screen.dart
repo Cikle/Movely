@@ -63,26 +63,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      // Check if email already exists in auth.users
-      final List<dynamic> existingUsers = await Supabase.instance.client
-          .from('users')
-          .select()
-          .eq('id', _emailController.text)
-          .limit(1);
-
-      if (existingUsers.isNotEmpty) {
-        throw Exception('Account already exists');
-      }
-
       // Check if username exists
-      final usernameExists = await Supabase.instance.client
-          .from('users')
-          .select()
-          .eq('username', _emailController.text.split('@')[0])
-          .single();
+      try {
+        final usernameExists = await Supabase.instance.client
+            .from('users')
+            .select()
+            .eq('username', _emailController.text.split('@')[0])
+            .single();
 
-      if (usernameExists != null) {
-        throw Exception('Username already taken');
+        if (usernameExists != null) {
+          throw Exception('Username already taken');
+        }
+      } catch (e) {
+        // If no user found, single() throws an error, which is what we want
       }
 
       await Supabase.instance.client.auth.signInWithOtp(
@@ -214,35 +207,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       : const Text('Continue'),
                 ),
               ] else ...[
-                TextField(
-                  controller: _otpController,
-                  maxLength: 6,
-                  onChanged: (value) {
-                    // Only allow numbers
-                    if (value.isNotEmpty &&
-                        !RegExp(r'^[0-9]*$').hasMatch(value)) {
-                      _otpController.text =
-                          value.replaceAll(RegExp(r'[^0-9]'), '');
-                      _otpController.selection = TextSelection.fromPosition(
-                          TextPosition(offset: _otpController.text.length));
-                    }
-                    if (value.length == 6) {
-                      _register();
-                    }
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Enter 6-digit verification code',
-                    helperText: '6 numbers required',
-                    counterText: '',
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.1),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    controller: _otpController,
+                    maxLength: 6,
+                    onChanged: (value) {
+                      if (value.isNotEmpty &&
+                          !RegExp(r'^[0-9]*$').hasMatch(value)) {
+                        _otpController.text =
+                            value.replaceAll(RegExp(r'[^0-9]'), '');
+                        _otpController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _otpController.text.length));
+                      }
+                      if (value.length == 6) {
+                        _register();
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: '······',
+                      helperText: '6 numbers required',
+                      counterText: '',
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: Colors.deepPurple.shade400.withOpacity(0.3),
+                        ),
+                      ),
                     ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  keyboardType: TextInputType.number,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 20,
+                      fontSize: 24,
+                    ),
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
