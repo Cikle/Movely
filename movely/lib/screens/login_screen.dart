@@ -163,8 +163,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ] else ...[
                 TextField(
                   controller: _otpController,
+                  maxLength: 6,
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    // Only allow numbers
+                    if (value.isNotEmpty && !RegExp(r'^[0-9]*$').hasMatch(value)) {
+                      _otpController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                      _otpController.selection = TextSelection.fromPosition(
+                          TextPosition(offset: _otpController.text.length));
+                    }
+                    if (value.length == 6) {
+                      _signIn();
+                    }
+                  },
                   decoration: InputDecoration(
-                    hintText: 'Enter verification code',
+                    hintText: 'Enter 6-digit verification code',
+                    helperText: '6 numbers required',
+                    counterText: '',
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.1),
                     border: OutlineInputBorder(
