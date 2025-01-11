@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:movely/services/activity_service.dart';
 import 'package:movely/screens/onboarding_screen.dart';
@@ -21,13 +22,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _canResendCode = true;
   int _resendTimer = 30;
   Timer? _timer;
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _otpController.dispose();
-    super.dispose();
-  }
 
   Future<void> _register() async {
     if (_showOtpField) {
@@ -73,9 +67,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final data = await Supabase.instance.client
           .from('users')
           .select()
-          .eq('id', (await Supabase.instance.client.auth.getUser()).user?.id)
+          .eq('id',
+              (await Supabase.instance.client.auth.getUser()).user?.id ?? '')
           .single();
-      
+
       if (data != null) {
         throw Exception('Account already exists');
       }
@@ -86,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .select()
           .eq('username', _emailController.text.split('@')[0])
           .single();
-      
+
       if (usernameExists != null) {
         throw Exception('Username already taken');
       }
