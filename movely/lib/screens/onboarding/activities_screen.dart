@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movely/screens/onboarding/age_bracket_screen.dart';
+import 'package:movely/screens/onboarding/discovery_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:movely/services/activity_service.dart';
 
@@ -110,7 +110,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                     ? () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => AgeBracketScreen(
+                            builder: (context) => DiscoveryScreen(
                               activityService: widget.activityService,
                               username: widget.username,
                               displayName: widget.displayName,
