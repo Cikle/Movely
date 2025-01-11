@@ -47,7 +47,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER handle_users_updated_at
-    BEFORE UPDATE ON public.users
-    FOR EACH ROW
-    EXECUTE FUNCTION public.handle_updated_at();
+DO $$
+BEGIN
+    DROP TRIGGER IF EXISTS handle_users_updated_at ON public.users;
+    CREATE TRIGGER handle_users_updated_at
+        BEFORE UPDATE ON public.users
+        FOR EACH ROW
+        EXECUTE FUNCTION public.handle_updated_at();
+END $$;
