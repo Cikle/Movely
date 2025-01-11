@@ -217,11 +217,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextField(
                   controller: _otpController,
                   maxLength: 6,
-                  keyboardType: TextInputType.number,
                   onChanged: (value) {
                     // Only allow numbers
-                    if (value.isNotEmpty && !RegExp(r'^[0-9]*$').hasMatch(value)) {
-                      _otpController.text = value.replaceAll(RegExp(r'[^0-9]'), '');
+                    if (value.isNotEmpty &&
+                        !RegExp(r'^[0-9]*$').hasMatch(value)) {
+                      _otpController.text =
+                          value.replaceAll(RegExp(r'[^0-9]'), '');
                       _otpController.selection = TextSelection.fromPosition(
                           TextPosition(offset: _otpController.text.length));
                     }
