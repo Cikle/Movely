@@ -14,20 +14,29 @@ CREATE TABLE IF NOT EXISTS public.users (
 -- Create RLS policies
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "Users can read their own data"
-    ON public.users
-    FOR SELECT
-    USING (auth.uid() = id);
+DO $$ 
+BEGIN
+    -- Drop existing policies if they exist
+    DROP POLICY IF EXISTS "Users can read their own data" ON public.users;
+    DROP POLICY IF EXISTS "Users can update their own data" ON public.users;
+    DROP POLICY IF EXISTS "Users can insert their own data" ON public.users;
+    
+    -- Create new policies
+    CREATE POLICY "Users can read their own data"
+        ON public.users
+        FOR SELECT
+        USING (auth.uid() = id);
 
-CREATE POLICY IF NOT EXISTS "Users can update their own data"
-    ON public.users
-    FOR UPDATE
-    USING (auth.uid() = id);
+    CREATE POLICY "Users can update their own data"
+        ON public.users
+        FOR UPDATE
+        USING (auth.uid() = id);
 
-CREATE POLICY IF NOT EXISTS "Users can insert their own data"
-    ON public.users
-    FOR INSERT
-    WITH CHECK (auth.uid() = id);
+    CREATE POLICY "Users can insert their own data"
+        ON public.users
+        FOR INSERT
+        WITH CHECK (auth.uid() = id);
+END $$;
 
 -- Create updated_at trigger
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
