@@ -15,7 +15,10 @@ class DiscoveryScreen extends StatefulWidget {
     required this.username,
     required this.displayName,
     required this.selectedActivities,
+    required this.ageBracket,
   }) : super(key: key);
+
+  final String ageBracket;
 
   @override
   _DiscoveryScreenState createState() => _DiscoveryScreenState();
@@ -46,6 +49,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
           'username': widget.username,
           'display_name': widget.displayName,
           'favorite_activities': widget.selectedActivities,
+          'age_bracket': widget.ageBracket,
           'discovery_source': _discoverySource,
           'onboarding_completed': true,
         });

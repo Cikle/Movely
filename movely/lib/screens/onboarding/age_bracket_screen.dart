@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:movely/screens/onboarding/age_bracket_screen.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:movely/screens/onboarding/discovery_screen.dart';
 import 'package:movely/services/activity_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ActivitiesScreen extends StatefulWidget {
+class AgeBracketScreen extends StatefulWidget {
   final ActivityService activityService;
   final String username;
   final String displayName;
+  final List<String> selectedActivities;
 
-  const ActivitiesScreen({
+  const AgeBracketScreen({
     Key? key,
     required this.activityService,
     required this.username,
     required this.displayName,
+    required this.selectedActivities,
   }) : super(key: key);
 
   @override
-  _ActivitiesScreenState createState() => _ActivitiesScreenState();
+  _AgeBracketScreenState createState() => _AgeBracketScreenState();
 }
 
-class _ActivitiesScreenState extends State<ActivitiesScreen> {
-  final List<String> _selectedActivities = [];
+class _AgeBracketScreenState extends State<AgeBracketScreen> {
+  String? _selectedAgeBracket;
+
+  final List<String> _ageBrackets = [
+    'Under 18',
+    '18-24',
+    '25-34',
+    '35-44',
+    '45-54',
+    '55-64',
+    '65+'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +49,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'What activities interest you?',
+                'What\'s your age range?',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -45,7 +57,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Select all that apply',
+                'This helps us personalize your experience',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[400],
                     ),
@@ -54,38 +66,26 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [
-                  'Running',
-                  'Walking',
-                  'Cycling',
-                  'Swimming',
-                  'Yoga',
-                  'Hiking',
-                  'Dancing',
-                  'Gym',
-                ].map((activity) {
+                children: _ageBrackets.map((bracket) {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (_selectedActivities.contains(activity)) {
-                          _selectedActivities.remove(activity);
-                        } else {
-                          _selectedActivities.add(activity);
-                        }
+                        _selectedAgeBracket = bracket;
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: _selectedActivities.contains(activity)
+                        color: _selectedAgeBracket == bracket
                             ? Colors.deepPurple.shade400
                             : Colors.white.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        activity,
+                        bracket,
                         style: TextStyle(
-                          color: _selectedActivities.contains(activity)
+                          color: _selectedAgeBracket == bracket
                               ? Colors.white
                               : Colors.grey[400],
                         ),
@@ -106,15 +106,15 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _selectedActivities.isNotEmpty
+                onPressed: _selectedAgeBracket != null
                     ? () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => AgeBracketScreen(
+                            builder: (context) => DiscoveryScreen(
                               activityService: widget.activityService,
                               username: widget.username,
                               displayName: widget.displayName,
-                              selectedActivities: _selectedActivities,
+                              selectedActivities: widget.selectedActivities,
                             ),
                           ),
                         );
