@@ -184,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   style: const TextStyle(color: Colors.white),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _register,
                   style: ElevatedButton.styleFrom(
@@ -248,6 +248,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
