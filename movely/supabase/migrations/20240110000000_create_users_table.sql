@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS public.users (
     daily_steps INTEGER DEFAULT 0,
     total_steps INTEGER DEFAULT 0,
     step_history JSONB DEFAULT '{"days": []}'::jsonb,
+    week_average DOUBLE PRECISION DEFAULT 0,
+    daily_steps INTEGER DEFAULT 0,
+    total_steps INTEGER DEFAULT 0,
+    step_history JSONB DEFAULT '{"days": []}'::jsonb,
     week_average DOUBLE PRECISION DEFAULT 0
 );
 
