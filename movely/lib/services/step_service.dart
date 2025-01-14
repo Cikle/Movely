@@ -112,7 +112,10 @@ class StepService {
         bool foundToday = false;
         for (var i = 0; i < stepHistory.length; i++) {
           if (stepHistory[i]['date'] == today) {
-            stepHistory[i]['steps'] = currentDailySteps;
+            // Only update if current steps are higher
+            if (currentDailySteps > (stepHistory[i]['steps'] as int)) {
+              stepHistory[i]['steps'] = currentDailySteps;
+            }
             foundToday = true;
             break;
           }
@@ -132,14 +135,18 @@ class StepService {
             stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
         final weekAverage = weekTotal / stepHistory.length;
 
-        // Update total steps with the current daily steps increase
+        // Only update total_steps if we have more steps than before
         final previousDailySteps = userData['daily_steps'] as int? ?? 0;
         final totalSteps = userData['total_steps'] as int? ?? 0;
-        final stepIncrease = currentDailySteps - previousDailySteps;
+        
+        int newTotalSteps = totalSteps;
+        if (currentDailySteps > previousDailySteps) {
+          newTotalSteps += (currentDailySteps - previousDailySteps);
+        }
 
         await Supabase.instance.client.from('users').update({
           'daily_steps': currentDailySteps,
-          'total_steps': totalSteps + stepIncrease,
+          'total_steps': newTotalSteps,
           'step_history': {'days': stepHistory},
           'week_average': weekAverage,
           'updated_at': now.toIso8601String(),
