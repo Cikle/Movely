@@ -59,24 +59,28 @@ class StepService {
         // Get current user data
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history, total_steps')
+            .select('step_history, total_steps, daily_steps')
             .eq('id', userId)
             .single();
         
         var stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+        final currentDailySteps = steps;
         
         // Update or add today's entry
         bool foundToday = false;
         for (var i = 0; i < stepHistory.length; i++) {
           if (stepHistory[i]['date'] == today) {
-            stepHistory[i]['steps'] = steps;
+            // Only update if new step count is higher
+            if (currentDailySteps > stepHistory[i]['steps']) {
+              stepHistory[i]['steps'] = currentDailySteps;
+            }
             foundToday = true;
             break;
           }
         }
         
         if (!foundToday) {
-          stepHistory.add({'date': today, 'steps': steps});
+          stepHistory.add({'date': today, 'steps': currentDailySteps});
         }
         
         // Keep only last 7 days
@@ -84,13 +88,23 @@ class StepService {
           stepHistory = stepHistory.sublist(stepHistory.length - 7);
         }
         
-        // Calculate average steps
-        int totalSteps = userData['total_steps'] ?? 0;
+        // Calculate 7-day average
+        final weekTotal = stepHistory.fold<int>(
+          0, (sum, day) => sum + (day['steps'] as int));
+        final weekAverage = weekTotal / stepHistory.length;
+        
+        // Update total steps only if current daily steps is higher
+        final previousDailySteps = userData['daily_steps'] as int? ?? 0;
+        final totalSteps = userData['total_steps'] as int? ?? 0;
+        final stepIncrease = currentDailySteps > previousDailySteps 
+            ? currentDailySteps - previousDailySteps 
+            : 0;
         
         await Supabase.instance.client.from('users').update({
-          'daily_steps': steps,
-          'total_steps': totalSteps + 1,
+          'daily_steps': currentDailySteps,
+          'total_steps': totalSteps + stepIncrease,
           'step_history': {'days': stepHistory},
+          'week_average': weekAverage,
           'updated_at': now.toIso8601String(),
         }).eq('id', userId);
       }

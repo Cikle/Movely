@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     daily_steps INTEGER DEFAULT 0,
     total_steps INTEGER DEFAULT 0,
-    step_history JSONB DEFAULT '{"days": []}'::jsonb
+    step_history JSONB DEFAULT '{"days": []}'::jsonb,
+    week_average DOUBLE PRECISION DEFAULT 0
 );
 
 -- Create RLS policies
