@@ -20,7 +20,8 @@ class StepService {
 
   bool _isNewDay() {
     final now = DateTime.now();
-    final lastCheckDate = DateTime(_lastMidnightCheck.year, _lastMidnightCheck.month, _lastMidnightCheck.day);
+    final lastCheckDate = DateTime(_lastMidnightCheck.year,
+        _lastMidnightCheck.month, _lastMidnightCheck.day);
     final todayDate = DateTime(now.year, now.month, now.day);
     return lastCheckDate.isBefore(todayDate);
   }
@@ -37,7 +38,7 @@ class StepService {
 
   Future<void> initializePedometer() async {
     _isInitialized = false;
-    
+
     // Set up midnight check timer
     _midnightCheckTimer?.cancel();
     _midnightCheckTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
@@ -56,20 +57,22 @@ class StepService {
         _displaySteps = userData['daily_steps'] as int? ?? 0;
         _steps = _displaySteps;
         _initialSteps = 0; // Reset initial steps to maintain today's count
+      }
     } catch (e) {
       print('Error loading saved steps: $e');
     }
 
     // Start smooth update timer
     _smoothUpdateTimer?.cancel();
-    _smoothUpdateTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    _smoothUpdateTimer =
+        Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (_displaySteps < steps) {
         _displaySteps = _displaySteps + 1;
         _stepsController.add(_displaySteps);
       }
     });
     _stepCountStream = Pedometer.stepCountStream;
-    
+
     _stepCountSubscription?.cancel();
     _stepCountSubscription = _stepCountStream?.listen(
       (StepCount event) {
@@ -93,17 +96,18 @@ class StepService {
       if (userId != null) {
         final now = DateTime.now().toUtc();
         final today = DateTime(now.year, now.month, now.day).toIso8601String();
-        
+
         // Get current user data
         final userData = await Supabase.instance.client
             .from('users')
             .select('step_history, total_steps, daily_steps')
             .eq('id', userId)
             .single();
-        
-        var stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+
+        var stepHistory =
+            (userData['step_history'] as Map<String, dynamic>)['days'] as List;
         final currentDailySteps = steps;
-        
+
         // Update or add today's entry
         bool foundToday = false;
         for (var i = 0; i < stepHistory.length; i++) {
@@ -113,26 +117,26 @@ class StepService {
             break;
           }
         }
-        
+
         if (!foundToday) {
           stepHistory.add({'date': today, 'steps': currentDailySteps});
         }
-        
+
         // Keep only last 7 days
         if (stepHistory.length > 7) {
           stepHistory = stepHistory.sublist(stepHistory.length - 7);
         }
-        
+
         // Calculate 7-day average including today's steps
-        final weekTotal = stepHistory.fold<int>(
-          0, (sum, day) => sum + (day['steps'] as int));
+        final weekTotal =
+            stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
         final weekAverage = weekTotal / stepHistory.length;
-        
+
         // Update total steps with the current daily steps increase
         final previousDailySteps = userData['daily_steps'] as int? ?? 0;
         final totalSteps = userData['total_steps'] as int? ?? 0;
         final stepIncrease = currentDailySteps - previousDailySteps;
-        
+
         await Supabase.instance.client.from('users').update({
           'daily_steps': currentDailySteps,
           'total_steps': totalSteps + stepIncrease,
