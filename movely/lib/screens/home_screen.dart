@@ -50,15 +50,37 @@ class _HomeScreenState extends State<HomeScreen> {
             .single();
         
         final stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+        final today = DateTime.now().toUtc();
+        final todayString = DateTime(today.year, today.month, today.day).toIso8601String();
         
-        if (stepHistory.isNotEmpty) {
-          final totalHistorySteps = stepHistory.fold<int>(
-            0, (sum, day) => sum + (day['steps'] as int));
-          _averageSteps = totalHistorySteps / stepHistory.length;
+        // Calculate average including today's steps
+        var totalHistorySteps = 0;
+        var daysCount = stepHistory.length;
+        bool todayIncluded = false;
+        
+        for (var day in stepHistory) {
+          if (day['date'] == todayString) {
+            todayIncluded = true;
+            totalHistorySteps += _steps; // Use current steps for today
+          } else {
+            totalHistorySteps += day['steps'] as int;
+          }
+        }
+        
+        // If today isn't in history, add it
+        if (!todayIncluded && _steps > 0) {
+          totalHistorySteps += _steps;
+          daysCount++;
+        }
+        
+        if (daysCount > 0) {
+          _averageSteps = totalHistorySteps / daysCount;
         }
         
         setState(() {
-          _totalSteps = userData['total_steps'] ?? 0;
+          // Add today's steps to total if they're higher than what's stored
+          final storedTotal = userData['total_steps'] as int? ?? 0;
+          _totalSteps = storedTotal + _steps;
         });
       }
     } catch (e) {
