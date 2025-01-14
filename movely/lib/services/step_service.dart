@@ -18,9 +18,22 @@ class StepService {
 
   Future<void> initializePedometer() async {
     _isInitialized = false;
-    _steps = 0;
-    _initialSteps = 0;
-    _displaySteps = 0;
+    
+    // Load saved steps from Supabase
+    try {
+      final userId = Supabase.instance.client.auth.currentUser?.id;
+      if (userId != null) {
+        final userData = await Supabase.instance.client
+            .from('users')
+            .select('daily_steps')
+            .eq('id', userId)
+            .single();
+        _displaySteps = userData['daily_steps'] as int? ?? 0;
+        _steps = _displaySteps;
+      }
+    } catch (e) {
+      print('Error loading saved steps: $e');
+    }
 
     // Start smooth update timer
     _smoothUpdateTimer?.cancel();
