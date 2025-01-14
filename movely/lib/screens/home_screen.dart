@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadActivities();
     _initializeStepTracking();
+    _loadStepStats();
   }
 
   Future<void> _initializeStepTracking() async {
@@ -45,42 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history, total_steps')
+            .select('daily_steps, step_history, total_steps, week_average')
             .eq('id', userId)
             .single();
         
-        final stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
-        final today = DateTime.now().toUtc();
-        final todayString = DateTime(today.year, today.month, today.day).toIso8601String();
-        
-        // Calculate average including today's steps
-        var totalHistorySteps = 0;
-        var daysCount = stepHistory.length;
-        bool todayIncluded = false;
-        
-        for (var day in stepHistory) {
-          if (day['date'] == todayString) {
-            todayIncluded = true;
-            totalHistorySteps += _steps; // Use current steps for today
-          } else {
-            totalHistorySteps += day['steps'] as int;
-          }
-        }
-        
-        // If today isn't in history, add it
-        if (!todayIncluded && _steps > 0) {
-          totalHistorySteps += _steps;
-          daysCount++;
-        }
-        
-        if (daysCount > 0) {
-          _averageSteps = totalHistorySteps / daysCount;
-        }
-        
         setState(() {
-          // Add today's steps to total if they're higher than what's stored
-          final storedTotal = userData['total_steps'] as int? ?? 0;
-          _totalSteps = storedTotal + _steps;
+          _steps = userData['daily_steps'] as int? ?? 0;
+          _totalSteps = userData['total_steps'] as int? ?? 0;
+          _averageSteps = userData['week_average'] as double? ?? 0.0;
         });
       }
     } catch (e) {
