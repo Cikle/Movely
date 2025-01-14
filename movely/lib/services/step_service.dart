@@ -50,12 +50,12 @@ class StepService {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('daily_steps')
+            .select('daily_steps, total_steps')
             .eq('id', userId)
             .single();
         _displaySteps = userData['daily_steps'] as int? ?? 0;
         _steps = _displaySteps;
-      }
+        _initialSteps = 0; // Reset initial steps to maintain today's count
     } catch (e) {
       print('Error loading saved steps: $e');
     }
@@ -108,10 +108,7 @@ class StepService {
         bool foundToday = false;
         for (var i = 0; i < stepHistory.length; i++) {
           if (stepHistory[i]['date'] == today) {
-            // Only update if new step count is higher
-            if (currentDailySteps > stepHistory[i]['steps']) {
-              stepHistory[i]['steps'] = currentDailySteps;
-            }
+            stepHistory[i]['steps'] = currentDailySteps;
             foundToday = true;
             break;
           }
@@ -126,17 +123,15 @@ class StepService {
           stepHistory = stepHistory.sublist(stepHistory.length - 7);
         }
         
-        // Calculate 7-day average
+        // Calculate 7-day average including today's steps
         final weekTotal = stepHistory.fold<int>(
           0, (sum, day) => sum + (day['steps'] as int));
         final weekAverage = weekTotal / stepHistory.length;
         
-        // Update total steps only if current daily steps is higher
+        // Update total steps with the current daily steps increase
         final previousDailySteps = userData['daily_steps'] as int? ?? 0;
         final totalSteps = userData['total_steps'] as int? ?? 0;
-        final stepIncrease = currentDailySteps > previousDailySteps 
-            ? currentDailySteps - previousDailySteps 
-            : 0;
+        final stepIncrease = currentDailySteps - previousDailySteps;
         
         await Supabase.instance.client.from('users').update({
           'daily_steps': currentDailySteps,
