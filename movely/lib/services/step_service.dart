@@ -6,19 +6,44 @@ class StepService {
   Stream<StepCount>? _stepCountStream;
   StreamSubscription<StepCount>? _stepCountSubscription;
   Timer? _smoothUpdateTimer;
+  Timer? _midnightCheckTimer;
   int _steps = 0;
   int _initialSteps = 0;
   int _displaySteps = 0;
   bool _isInitialized = false;
+  DateTime _lastMidnightCheck = DateTime.now();
   final _stepsController = StreamController<int>.broadcast();
 
   Stream<int> get stepStream => _stepsController.stream;
   int get steps => _isInitialized ? _steps - _initialSteps : 0;
   int get displaySteps => _displaySteps;
 
+  bool _isNewDay() {
+    final now = DateTime.now();
+    final lastCheckDate = DateTime(_lastMidnightCheck.year, _lastMidnightCheck.month, _lastMidnightCheck.day);
+    final todayDate = DateTime(now.year, now.month, now.day);
+    return lastCheckDate.isBefore(todayDate);
+  }
+
+  Future<void> _checkAndResetSteps() async {
+    if (_isNewDay()) {
+      _steps = 0;
+      _initialSteps = 0;
+      _displaySteps = 0;
+      _lastMidnightCheck = DateTime.now();
+      await _saveSteps();
+    }
+  }
+
   Future<void> initializePedometer() async {
     _isInitialized = false;
     
+    // Set up midnight check timer
+    _midnightCheckTimer?.cancel();
+    _midnightCheckTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _checkAndResetSteps();
+    });
+
     // Load saved steps from Supabase
     try {
       final userId = Supabase.instance.client.auth.currentUser?.id;
@@ -129,6 +154,7 @@ class StepService {
   void dispose() {
     _stepCountSubscription?.cancel();
     _smoothUpdateTimer?.cancel();
+    _midnightCheckTimer?.cancel();
     _stepsController.close();
   }
 }
