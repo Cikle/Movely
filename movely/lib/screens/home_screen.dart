@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
             .select('step_history, total_steps, week_average, daily_steps')
             .eq('id', userId)
             .single();
-        
+
         setState(() {
           _steps = userData['daily_steps'] ?? 0;
           _totalSteps = userData['total_steps'] ?? 0;
@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Current Streak',
+                          'Current Streak 5k',
                           style: TextStyle(
                             color: Colors.grey[400],
                             fontSize: 14,
