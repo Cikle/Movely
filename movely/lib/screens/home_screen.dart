@@ -46,15 +46,40 @@ class _HomeScreenState extends State<HomeScreen> {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('daily_steps, step_history, total_steps, week_average')
+            .select('step_history')
             .eq('id', userId)
             .single();
         
-        setState(() {
-          _steps = userData['daily_steps'] as int? ?? 0;
-          _totalSteps = userData['total_steps'] as int? ?? 0;
-          _averageSteps = userData['week_average'] as double? ?? 0.0;
-        });
+        final stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+        
+        if (stepHistory.isNotEmpty) {
+          // Calculate total steps
+          final totalSteps = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
+          
+          // Get today's steps
+          final now = DateTime.now().toUtc();
+          final today = DateTime(now.year, now.month, now.day).toIso8601String();
+          final todayEntry = stepHistory.firstWhere(
+            (entry) => entry['date'] == today,
+            orElse: () => {'steps': 0},
+          );
+          
+          // Calculate 7-day average
+          final weekTotal = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
+          final weekAverage = stepHistory.length > 0 ? weekTotal / stepHistory.length : 0.0;
+          
+          setState(() {
+            _steps = todayEntry['steps'] as int? ?? 0;
+            _totalSteps = totalSteps;
+            _averageSteps = weekAverage;
+          });
+        } else {
+          setState(() {
+            _steps = 0;
+            _totalSteps = 0;
+            _averageSteps = 0.0;
+          });
+        }
       }
     } catch (e) {
       print('Error loading step stats: $e');
