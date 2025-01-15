@@ -36,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _steps = steps;
       });
+      _loadStepStats(); // Reload stats when steps update
     });
     await _loadStepStats();
   }
@@ -46,40 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history')
+            .select('step_history, total_steps, week_average, daily_steps')
             .eq('id', userId)
             .single();
         
-        final stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
-        
-        if (stepHistory.isNotEmpty) {
-          // Calculate total steps
-          final totalSteps = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
-          
-          // Get today's steps
-          final now = DateTime.now().toUtc();
-          final today = DateTime(now.year, now.month, now.day).toIso8601String();
-          final todayEntry = stepHistory.firstWhere(
-            (entry) => entry['date'] == today,
-            orElse: () => {'steps': 0},
-          );
-          
-          // Calculate 7-day average
-          final weekTotal = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
-          final weekAverage = stepHistory.length > 0 ? weekTotal / stepHistory.length : 0.0;
-          
-          setState(() {
-            _steps = todayEntry['steps'] as int? ?? 0;
-            _totalSteps = totalSteps;
-            _averageSteps = weekAverage;
-          });
-        } else {
-          setState(() {
-            _steps = 0;
-            _totalSteps = 0;
-            _averageSteps = 0.0;
-          });
-        }
+        setState(() {
+          _steps = userData['daily_steps'] ?? 0;
+          _totalSteps = userData['total_steps'] ?? 0;
+          _averageSteps = userData['week_average'] ?? 0.0;
+        });
       }
     } catch (e) {
       print('Error loading step stats: $e');

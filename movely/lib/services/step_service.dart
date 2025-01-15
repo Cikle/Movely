@@ -111,18 +111,21 @@ class StepService {
         // Get current user data
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history')
+            .select('step_history, daily_steps')
             .eq('id', userId)
             .single();
 
         var stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
         final currentDailySteps = steps;
-
+        
         // Update or add today's entry
         bool foundToday = false;
         for (var i = 0; i < stepHistory.length; i++) {
           if (stepHistory[i]['date'] == today) {
-            stepHistory[i]['steps'] = currentDailySteps;
+            // Only update if new step count is higher
+            if (currentDailySteps > stepHistory[i]['steps']) {
+              stepHistory[i]['steps'] = currentDailySteps;
+            }
             foundToday = true;
             break;
           }
@@ -144,13 +147,16 @@ class StepService {
         // Calculate total steps as sum of all historical steps
         final totalSteps = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
 
-        await Supabase.instance.client.from('users').update({
-          'daily_steps': currentDailySteps,
-          'total_steps': totalSteps,
-          'step_history': {'days': stepHistory},
-          'week_average': weekAverage,
-          'updated_at': now.toIso8601String(),
-        }).eq('id', userId);
+        // Only update if we have more steps than previously saved
+        if (currentDailySteps > (userData['daily_steps'] ?? 0)) {
+          await Supabase.instance.client.from('users').update({
+            'daily_steps': currentDailySteps,
+            'total_steps': totalSteps,
+            'step_history': {'days': stepHistory},
+            'week_average': weekAverage,
+            'updated_at': now.toIso8601String(),
+          }).eq('id', userId);
+        }
       }
     } catch (e) {
       print('Error saving steps: $e');
