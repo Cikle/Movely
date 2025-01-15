@@ -21,6 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _steps = 0;
   int _totalSteps = 0;
   double _averageSteps = 0;
+  int _currentStreak = 0;
+  int _longestStreak = 0;
 
   @override
   void initState() {
@@ -55,6 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _steps = userData['daily_steps'] ?? 0;
           _totalSteps = userData['total_steps'] ?? 0;
           _averageSteps = userData['week_average'] ?? 0.0;
+          _currentStreak = userData['current_streak'] ?? 0;
+          _longestStreak = userData['longest_streak'] ?? 0;
         });
       }
     } catch (e) {
@@ -156,6 +160,92 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Current Streak',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              '$_currentStreak',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.local_fire_department,
+                              color: Colors.orange.shade400,
+                              size: 24,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Best Streak',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              '$_longestStreak',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.emoji_events,
+                              color: Colors.amber.shade400,
+                              size: 24,
+                            ),
+                          ],
                         ),
                       ],
                     ),

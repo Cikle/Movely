@@ -111,7 +111,7 @@ class StepService {
         // Get current user data
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history, daily_steps')
+            .select('step_history, daily_steps, current_streak, longest_streak, last_streak_date')
             .eq('id', userId)
             .single();
 
@@ -120,11 +120,15 @@ class StepService {
         
         // Update or add today's entry
         bool foundToday = false;
+        bool metDailyGoal = false;
+        const int DAILY_STEP_GOAL = 5000; // Configurable daily step goal
+        
         for (var i = 0; i < stepHistory.length; i++) {
           if (stepHistory[i]['date'] == today) {
             // Only update if new step count is higher
             if (currentDailySteps > stepHistory[i]['steps']) {
               stepHistory[i]['steps'] = currentDailySteps;
+              metDailyGoal = currentDailySteps >= DAILY_STEP_GOAL;
             }
             foundToday = true;
             break;
@@ -133,6 +137,7 @@ class StepService {
 
         if (!foundToday) {
           stepHistory.add({'date': today, 'steps': currentDailySteps});
+          metDailyGoal = currentDailySteps >= DAILY_STEP_GOAL;
         }
 
         // Keep only last 7 days
@@ -147,6 +152,38 @@ class StepService {
         // Calculate total steps as sum of all historical steps
         final totalSteps = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
 
+        // Handle streak calculation
+        var currentStreak = userData['current_streak'] ?? 0;
+        var longestStreak = userData['longest_streak'] ?? 0;
+        final lastStreakDate = DateTime.parse(userData['last_streak_date'] ?? today);
+        final yesterday = DateTime.now().subtract(const Duration(days: 1));
+        
+        if (metDailyGoal) {
+          if (lastStreakDate.year == yesterday.year && 
+              lastStreakDate.month == yesterday.month && 
+              lastStreakDate.day == yesterday.day) {
+            // Yesterday's streak continues
+            currentStreak++;
+          } else if (lastStreakDate.year == now.year && 
+                     lastStreakDate.month == now.month && 
+                     lastStreakDate.day == now.day) {
+            // Already counted today
+          } else {
+            // New streak starts
+            currentStreak = 1;
+          }
+          
+          // Update longest streak if current is higher
+          if (currentStreak > longestStreak) {
+            longestStreak = currentStreak;
+          }
+        } else if (lastStreakDate.year != now.year || 
+                   lastStreakDate.month != now.month || 
+                   lastStreakDate.day != now.day - 1) {
+          // Streak broken
+          currentStreak = 0;
+        }
+
         // Only update if we have more steps than previously saved
         if (currentDailySteps > (userData['daily_steps'] ?? 0)) {
           await Supabase.instance.client.from('users').update({
@@ -154,6 +191,9 @@ class StepService {
             'total_steps': totalSteps,
             'step_history': {'days': stepHistory},
             'week_average': weekAverage,
+            'current_streak': currentStreak,
+            'longest_streak': longestStreak,
+            'last_streak_date': now.toIso8601String(),
             'updated_at': now.toIso8601String(),
           }).eq('id', userId);
         }

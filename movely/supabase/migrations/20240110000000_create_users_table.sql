@@ -11,7 +11,10 @@ CREATE TABLE IF NOT EXISTS public.users (
     daily_steps INTEGER DEFAULT 0,
     total_steps INTEGER DEFAULT 0,
     step_history JSONB DEFAULT '{"days": []}'::jsonb,
-    week_average DOUBLE PRECISION DEFAULT 0
+    week_average DOUBLE PRECISION DEFAULT 0,
+    current_streak INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
+    last_streak_date DATE DEFAULT CURRENT_DATE
 );
 
 -- Create RLS policies
