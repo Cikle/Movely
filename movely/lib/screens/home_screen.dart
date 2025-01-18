@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (mounted) {
           setState(() {
-            _steps = userData['daily_steps'] ?? 0;
+            // Don't override _steps since it's managed by the pedometer
             _totalSteps = userData['total_steps'] ?? 0;
             _averageSteps = (userData['week_average'] as num?)?.toDouble() ?? 0.0;
             _currentStreak = userData['current_streak'] ?? 0;

@@ -67,7 +67,8 @@ class StepService {
 
     // Load saved steps from Supabase only if no steps counted yet
     try {
-      if (_steps == 0) {
+      // Only load from Supabase if we haven't started counting steps yet
+      if (!_isInitialized) {
         final userId = Supabase.instance.client.auth.currentUser?.id;
         if (userId != null) {
           final userData = await Supabase.instance.client
@@ -76,7 +77,7 @@ class StepService {
               .eq('id', userId)
               .single();
           
-          if (_steps == 0 && userData['daily_steps'] != null) {
+          if (userData['daily_steps'] != null) {
             _displaySteps = userData['daily_steps'];
             _steps = _displaySteps;
             _stepsController.add(_displaySteps);
