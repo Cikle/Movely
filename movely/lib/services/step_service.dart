@@ -54,7 +54,7 @@ class StepService {
             .select('daily_steps')
             .eq('id', userId)
             .single();
-        
+
         if (userData['daily_steps'] != null) {
           _displaySteps = userData['daily_steps'];
           _steps = _displaySteps;
@@ -88,7 +88,8 @@ class StepService {
 
     // Start smooth update timer
     _smoothUpdateTimer?.cancel();
-    _smoothUpdateTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    _smoothUpdateTimer =
+        Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (_displaySteps < steps) {
         _displaySteps = steps;
         _stepsController.add(_displaySteps);
@@ -106,18 +107,20 @@ class StepService {
         // Get current user data
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history, daily_steps, current_streak, longest_streak, last_streak_date')
+            .select(
+                'step_history, daily_steps, current_streak, longest_streak, last_streak_date')
             .eq('id', userId)
             .single();
 
-        var stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
+        var stepHistory =
+            (userData['step_history'] as Map<String, dynamic>)['days'] as List;
         final currentDailySteps = steps;
-        
+
         // Update or add today's entry
         bool foundToday = false;
         bool metDailyGoal = false;
         const int DAILY_STEP_GOAL = 5000; // Configurable daily step goal
-        
+
         for (var i = 0; i < stepHistory.length; i++) {
           if (stepHistory[i]['date'] == today) {
             // Only update if new step count is higher
@@ -142,17 +145,19 @@ class StepService {
 
         // Calculate 7-day average from step history
         var weekTotal = 0;
-        final now = DateTime.now();
-        final sevenDaysAgo = now.subtract(const Duration(days: 7));
-        
+        final currentDate = DateTime.now();
+        final sevenDaysAgo = currentDate.subtract(const Duration(days: 7));
+
         for (var day in stepHistory) {
           final date = DateTime.parse(day['date']);
           if (date.isAfter(sevenDaysAgo)) {
             weekTotal += day['steps'] as int;
           }
         }
-        
-        final weekAverage = stepHistory.isEmpty ? 0.0 : (weekTotal / stepHistory.length).toDouble();
+
+        final weekAverage = stepHistory.isEmpty
+            ? 0.0
+            : (weekTotal / stepHistory.length).toDouble();
 
         // Calculate total steps by adding today's steps to previous total
         final previousTotal = userData['total_steps'] ?? 0;
@@ -162,31 +167,32 @@ class StepService {
         // Handle streak calculation
         var currentStreak = userData['current_streak'] ?? 0;
         var longestStreak = userData['longest_streak'] ?? 0;
-        final lastStreakDate = DateTime.parse(userData['last_streak_date'] ?? today);
+        final lastStreakDate =
+            DateTime.parse(userData['last_streak_date'] ?? today);
         final yesterday = DateTime.now().subtract(const Duration(days: 1));
-        
+
         if (metDailyGoal) {
-          if (lastStreakDate.year == yesterday.year && 
-              lastStreakDate.month == yesterday.month && 
+          if (lastStreakDate.year == yesterday.year &&
+              lastStreakDate.month == yesterday.month &&
               lastStreakDate.day == yesterday.day) {
             // Yesterday's streak continues
             currentStreak++;
-          } else if (lastStreakDate.year == now.year && 
-                     lastStreakDate.month == now.month && 
-                     lastStreakDate.day == now.day) {
+          } else if (lastStreakDate.year == now.year &&
+              lastStreakDate.month == now.month &&
+              lastStreakDate.day == now.day) {
             // Already counted today
           } else {
             // New streak starts
             currentStreak = 1;
           }
-          
+
           // Update longest streak if current is higher
           if (currentStreak > longestStreak) {
             longestStreak = currentStreak;
           }
-        } else if (lastStreakDate.year != now.year || 
-                   lastStreakDate.month != now.month || 
-                   lastStreakDate.day != now.day - 1) {
+        } else if (lastStreakDate.year != now.year ||
+            lastStreakDate.month != now.month ||
+            lastStreakDate.day != now.day - 1) {
           // Streak broken
           currentStreak = 0;
         }
