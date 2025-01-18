@@ -147,7 +147,7 @@ class StepService {
 
         // Calculate 7-day average
         final weekTotal = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
-        final weekAverage = weekTotal / stepHistory.length;
+        final weekAverage = (weekTotal / stepHistory.length).toDouble();
 
         // Calculate total steps as sum of all historical steps
         final totalSteps = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));

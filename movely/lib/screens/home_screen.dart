@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _steps = userData['daily_steps'] ?? 0;
           _totalSteps = userData['total_steps'] ?? 0;
-          _averageSteps = userData['week_average'] ?? 0.0;
+          _averageSteps = (userData['week_average'] as num?)?.toDouble() ?? 0.0;
           _currentStreak = userData['current_streak'] ?? 0;
           _longestStreak = userData['longest_streak'] ?? 0;
         });
