@@ -15,7 +15,7 @@ class StepService {
   final _stepsController = StreamController<int>.broadcast();
 
   Stream<int> get stepStream => _stepsController.stream;
-  int get steps => _isInitialized ? _steps - _initialSteps : 0;
+  int get steps => _displaySteps;
   int get displaySteps => _displaySteps;
 
   bool _isNewDay() {
@@ -45,45 +45,43 @@ class StepService {
       _checkAndResetSteps();
     });
 
-    // Start step counting first
-    _stepCountStream = Pedometer.stepCountStream;
-
-    _stepCountSubscription?.cancel();
-    _stepCountSubscription = _stepCountStream?.listen(
-      (StepCount event) {
-        if (!_isInitialized) {
-          _initialSteps = event.steps;
-          _isInitialized = true;
-        }
-        _steps = event.steps;
-        _displaySteps = steps;
-        _stepsController.add(_displaySteps);
-        _saveSteps();
-      },
-      onError: (error) {
-        print('Pedometer error: $error');
-      },
-    );
-
-    // Load saved steps from Supabase only if no steps counted yet
+    // Load saved steps from Supabase first
     try {
-      // Only load from Supabase if we haven't started counting steps yet
-      if (!_isInitialized) {
-        final userId = Supabase.instance.client.auth.currentUser?.id;
-        if (userId != null) {
-          final userData = await Supabase.instance.client
-              .from('users')
-              .select('daily_steps')
-              .eq('id', userId)
-              .single();
-          
-          if (userData['daily_steps'] != null) {
-            _displaySteps = userData['daily_steps'];
-            _steps = _displaySteps;
-            _stepsController.add(_displaySteps);
-          }
+      final userId = Supabase.instance.client.auth.currentUser?.id;
+      if (userId != null) {
+        final userData = await Supabase.instance.client
+            .from('users')
+            .select('daily_steps')
+            .eq('id', userId)
+            .single();
+        
+        if (userData['daily_steps'] != null) {
+          _displaySteps = userData['daily_steps'];
+          _steps = _displaySteps;
+          _stepsController.add(_displaySteps);
         }
       }
+
+      // Start step counting after loading initial value
+      _stepCountStream = Pedometer.stepCountStream;
+
+      _stepCountSubscription?.cancel();
+      _stepCountSubscription = _stepCountStream?.listen(
+        (StepCount event) {
+          if (!_isInitialized) {
+            _initialSteps = event.steps;
+            _isInitialized = true;
+          }
+          final newSteps = event.steps - _initialSteps + _displaySteps;
+          _steps = newSteps;
+          _displaySteps = newSteps;
+          _stepsController.add(_displaySteps);
+          _saveSteps();
+        },
+        onError: (error) {
+          print('Pedometer error: $error');
+        },
+      );
     } catch (e) {
       print('Error loading saved steps: $e');
     }
