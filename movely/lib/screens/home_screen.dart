@@ -27,9 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadActivities();
-    _initializeStepTracking();
-    _loadStepStats();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    await Future.wait([
+      _loadActivities(),
+      _initializeStepTracking(),
+      _loadStepStats(),
+    ]);
   }
 
   Future<void> _initializeStepTracking() async {
