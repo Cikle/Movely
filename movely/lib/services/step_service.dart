@@ -140,12 +140,24 @@ class StepService {
           stepHistory = stepHistory.sublist(stepHistory.length - 7);
         }
 
-        // Calculate 7-day average
-        final weekTotal = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
-        final weekAverage = (weekTotal / stepHistory.length).toDouble();
+        // Calculate 7-day average from step history
+        var weekTotal = 0;
+        final now = DateTime.now();
+        final sevenDaysAgo = now.subtract(const Duration(days: 7));
+        
+        for (var day in stepHistory) {
+          final date = DateTime.parse(day['date']);
+          if (date.isAfter(sevenDaysAgo)) {
+            weekTotal += day['steps'] as int;
+          }
+        }
+        
+        final weekAverage = stepHistory.isEmpty ? 0.0 : (weekTotal / stepHistory.length).toDouble();
 
-        // Calculate total steps as sum of all historical steps
-        final totalSteps = stepHistory.fold<int>(0, (sum, day) => sum + (day['steps'] as int));
+        // Calculate total steps by adding today's steps to previous total
+        final previousTotal = userData['total_steps'] ?? 0;
+        final todaySteps = currentDailySteps;
+        final totalSteps = previousTotal + todaySteps;
 
         // Handle streak calculation
         var currentStreak = userData['current_streak'] ?? 0;
