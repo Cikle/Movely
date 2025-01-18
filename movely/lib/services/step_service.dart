@@ -45,43 +45,7 @@ class StepService {
       _checkAndResetSteps();
     });
 
-    // Load saved steps from Supabase
-    try {
-      final userId = Supabase.instance.client.auth.currentUser?.id;
-      if (userId != null) {
-        final userData = await Supabase.instance.client
-            .from('users')
-            .select('daily_steps, total_steps, step_history, week_average')
-            .eq('id', userId)
-            .single();
-        
-        // Get today's date in UTC
-        final now = DateTime.now().toUtc();
-        final today = DateTime(now.year, now.month, now.day).toIso8601String();
-        
-        // Check step history for today's entry
-        final stepHistory = (userData['step_history'] as Map<String, dynamic>)['days'] as List;
-        final todayEntry = stepHistory.firstWhere(
-          (entry) => entry['date'] == today,
-          orElse: () => {'steps': 0},
-        );
-
-        _displaySteps = todayEntry['steps'] as int? ?? 0;
-        _steps = _displaySteps;
-        _initialSteps = 0; // Reset initial steps to maintain today's count
-      }
-    } catch (e) {
-      print('Error loading saved steps: $e');
-    }
-
-    // Start smooth update timer
-    _smoothUpdateTimer?.cancel();
-    _smoothUpdateTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
-      if (_displaySteps < steps) {
-        _displaySteps++;
-        _stepsController.add(_displaySteps);
-      }
-    });
+    // Start step counting first
     _stepCountStream = Pedometer.stepCountStream;
 
     _stepCountSubscription?.cancel();
@@ -92,13 +56,45 @@ class StepService {
           _isInitialized = true;
         }
         _steps = event.steps;
-        _stepsController.add(steps);
+        _displaySteps = steps;
+        _stepsController.add(_displaySteps);
         _saveSteps();
       },
       onError: (error) {
         print('Pedometer error: $error');
       },
     );
+
+    // Load saved steps from Supabase only if no steps counted yet
+    try {
+      if (_steps == 0) {
+        final userId = Supabase.instance.client.auth.currentUser?.id;
+        if (userId != null) {
+          final userData = await Supabase.instance.client
+              .from('users')
+              .select('daily_steps')
+              .eq('id', userId)
+              .single();
+          
+          if (_steps == 0 && userData['daily_steps'] != null) {
+            _displaySteps = userData['daily_steps'];
+            _steps = _displaySteps;
+            _stepsController.add(_displaySteps);
+          }
+        }
+      }
+    } catch (e) {
+      print('Error loading saved steps: $e');
+    }
+
+    // Start smooth update timer
+    _smoothUpdateTimer?.cancel();
+    _smoothUpdateTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (_displaySteps < steps) {
+        _displaySteps = steps;
+        _stepsController.add(_displaySteps);
+      }
+    });
   }
 
   Future<void> _saveSteps() async {
