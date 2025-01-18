@@ -51,7 +51,7 @@ class StepService {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('daily_steps, total_steps, step_history')
+            .select('daily_steps, total_steps, step_history, week_average')
             .eq('id', userId)
             .single();
         

@@ -31,11 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadInitialData() async {
-    await Future.wait([
-      _loadActivities(),
-      _initializeStepTracking(),
-      _loadStepStats(),
-    ]);
+    try {
+      await _initializeStepTracking();
+      await Future.wait([
+        _loadActivities(),
+        _loadStepStats(),
+      ]);
+    } catch (e) {
+      print('Error loading initial data: $e');
+    }
   }
 
   Future<void> _initializeStepTracking() async {
@@ -55,17 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history, total_steps, week_average, daily_steps')
+            .select('step_history, total_steps, week_average, daily_steps, current_streak, longest_streak')
             .eq('id', userId)
             .single();
 
-        setState(() {
-          _steps = userData['daily_steps'] ?? 0;
-          _totalSteps = userData['total_steps'] ?? 0;
-          _averageSteps = (userData['week_average'] as num?)?.toDouble() ?? 0.0;
-          _currentStreak = userData['current_streak'] ?? 0;
-          _longestStreak = userData['longest_streak'] ?? 0;
-        });
+        if (mounted) {
+          setState(() {
+            _steps = userData['daily_steps'] ?? 0;
+            _totalSteps = userData['total_steps'] ?? 0;
+            _averageSteps = (userData['week_average'] as num?)?.toDouble() ?? 0.0;
+            _currentStreak = userData['current_streak'] ?? 0;
+            _longestStreak = userData['longest_streak'] ?? 0;
+          });
+        }
       }
     } catch (e) {
       print('Error loading step stats: $e');
