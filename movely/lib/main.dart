@@ -54,6 +54,17 @@ class MainApp extends StatelessWidget {
                     );
                   }
                   if (snapshot.hasData && snapshot.data == true) {
+                    // Add daily login EXP
+                    activityService.addDailyLoginExp().then((expGained) {
+                      if (expGained > 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Daily login bonus: +$expGained EXP!'),
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+                      }
+                    });
                     return HomeScreen(activityService: activityService);
                   }
                   return OnboardingScreen(activityService: activityService);

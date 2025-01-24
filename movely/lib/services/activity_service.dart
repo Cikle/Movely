@@ -7,6 +7,39 @@ class ActivityService {
   final SupabaseClient _supabase = Supabase.instance.client;
   Activity? _currentActivity;
 
+  Future<int> addDailyLoginExp() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('No user is currently logged in.');
+    }
+
+    final now = DateTime.now().toUtc();
+    final today = DateTime(now.year, now.month, now.day).toIso8601String();
+
+    final userData = await _supabase
+        .from('users')
+        .select('exp, last_login_date')
+        .eq('id', userId)
+        .single();
+
+    int currentExp = userData['exp'] ?? 0;
+    String? lastLoginDate = userData['last_login_date'];
+
+    if (lastLoginDate != today) {
+      const int dailyLoginExp = 50;
+      currentExp += dailyLoginExp;
+
+      await _supabase.from('users').update({
+        'exp': currentExp,
+        'last_login_date': today,
+      }).eq('id', userId);
+
+      return dailyLoginExp;
+    }
+
+    return 0;
+  }
+
   Future<void> startActivity(String activityType) async {
     if (_currentActivity != null) {
       throw Exception('An activity is already in progress');

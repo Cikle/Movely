@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     week_average DOUBLE PRECISION DEFAULT 0,
     current_streak INTEGER DEFAULT 0,
     longest_streak INTEGER DEFAULT 0,
-    last_streak_date DATE DEFAULT CURRENT_DATE
+    last_streak_date DATE DEFAULT CURRENT_DATE,
+    exp INTEGER DEFAULT 0
 );
 
 -- Create RLS policies

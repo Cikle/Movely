@@ -3,6 +3,7 @@ import 'package:pedometer/pedometer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StepService {
+  static const int STEPS_PER_EXP = 25;
   Stream<StepCount>? _stepCountStream;
   StreamSubscription<StepCount>? _stepCountSubscription;
   Timer? _smoothUpdateTimer;
@@ -17,6 +18,8 @@ class StepService {
   Stream<int> get stepStream => _stepsController.stream;
   int get steps => _displaySteps;
   int get displaySteps => _displaySteps;
+  int _exp = 0;
+  int get exp => _exp;
 
   bool _isNewDay() {
     final now = DateTime.now();
@@ -60,6 +63,9 @@ class StepService {
           _steps = _displaySteps;
           _stepsController.add(_displaySteps);
         }
+        if (userData['exp'] != null) {
+          _exp = userData['exp'];
+        }
       }
 
       // Start step counting after loading initial value
@@ -76,6 +82,7 @@ class StepService {
           _steps = newSteps;
           _displaySteps = newSteps;
           _stepsController.add(_displaySteps);
+          _calculateExp();
           _saveSteps();
         },
         onError: (error) {
@@ -95,6 +102,13 @@ class StepService {
         _stepsController.add(_displaySteps);
       }
     });
+  }
+
+  void _calculateExp() {
+    int newExp = _exp + (_steps ~/ STEPS_PER_EXP);
+    if (newExp > _exp) {
+      _exp = newExp;
+    }
   }
 
   Future<void> _saveSteps() async {
@@ -208,6 +222,7 @@ class StepService {
             'longest_streak': longestStreak,
             'last_streak_date': now.toIso8601String(),
             'updated_at': now.toIso8601String(),
+            'exp': _exp,
           }).eq('id', userId);
         }
       }

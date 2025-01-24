@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double _averageSteps = 0;
   int _currentStreak = 0;
   int _longestStreak = 0;
+  int _exp = 0;
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (userId != null) {
         final userData = await Supabase.instance.client
             .from('users')
-            .select('step_history, total_steps, week_average, daily_steps, current_streak, longest_streak')
+            .select('step_history, total_steps, week_average, daily_steps, current_streak, longest_streak, exp')
             .eq('id', userId)
             .single();
 
@@ -70,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _averageSteps = (userData['week_average'] as num?)?.toDouble() ?? 0.0;
             _currentStreak = userData['current_streak'] ?? 0;
             _longestStreak = userData['longest_streak'] ?? 0;
+            _exp = userData['exp'] ?? 0;
           });
         }
       }
@@ -265,44 +267,71 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Total Steps',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 14,
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Steps',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _totalSteps.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 4),
+                        Text(
+                          _totalSteps.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Icon(
-                    Icons.directions_walk,
-                    color: Colors.deepPurple.shade400,
-                    size: 32,
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'EXP',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _exp.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             TextButton(
               onPressed: () async {
