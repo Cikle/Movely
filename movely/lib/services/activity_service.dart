@@ -27,12 +27,13 @@ class ActivityService {
     int currentStreak = userData['current_streak'] ?? 0;
     int longestStreak = userData['longest_streak'] ?? 0;
 
-    if (lastLoginDate != today) {
+    if (lastLoginDate == null || lastLoginDate != today) {
       const int dailyLoginExp = 50;
       currentExp += dailyLoginExp;
 
       // Update streak
-      if (lastLoginDate == DateTime(now.year, now.month, now.day - 1).toIso8601String()) {
+      if (lastLoginDate != null &&
+          lastLoginDate == DateTime(now.year, now.month, now.day - 1).toIso8601String()) {
         currentStreak++;
       } else {
         currentStreak = 1;

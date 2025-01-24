@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     current_streak INTEGER DEFAULT 0,
     longest_streak INTEGER DEFAULT 0,
     last_streak_date DATE DEFAULT CURRENT_DATE,
-    exp INTEGER DEFAULT 0
+    exp INTEGER DEFAULT 0,
+    last_login_date DATE
 );
 
 -- Create RLS policies
