@@ -38,6 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
         _loadActivities(),
         _loadStepStats(),
       ]);
+      // Add daily login EXP and reload stats
+      await widget.activityService.addDailyLoginExp();
+      await _loadStepStats();
     } catch (e) {
       print('Error loading initial data: $e');
     }
@@ -66,12 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (mounted) {
           setState(() {
-            // Don't override _steps since it's managed by the pedometer
             _totalSteps = userData['total_steps'] ?? 0;
             _averageSteps = (userData['week_average'] as num?)?.toDouble() ?? 0.0;
             _currentStreak = userData['current_streak'] ?? 0;
             _longestStreak = userData['longest_streak'] ?? 0;
             _exp = userData['exp'] ?? 0;
+            // Update _steps only if it's less than the value from the database
+            if (_steps < (userData['daily_steps'] ?? 0)) {
+              _steps = userData['daily_steps'] ?? 0;
+            }
           });
         }
       }

@@ -18,20 +18,35 @@ class ActivityService {
 
     final userData = await _supabase
         .from('users')
-        .select('exp, last_login_date')
+        .select('exp, last_login_date, current_streak, longest_streak')
         .eq('id', userId)
         .single();
 
     int currentExp = userData['exp'] ?? 0;
     String? lastLoginDate = userData['last_login_date'];
+    int currentStreak = userData['current_streak'] ?? 0;
+    int longestStreak = userData['longest_streak'] ?? 0;
 
     if (lastLoginDate != today) {
       const int dailyLoginExp = 50;
       currentExp += dailyLoginExp;
 
+      // Update streak
+      if (lastLoginDate == DateTime(now.year, now.month, now.day - 1).toIso8601String()) {
+        currentStreak++;
+      } else {
+        currentStreak = 1;
+      }
+
+      if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+      }
+
       await _supabase.from('users').update({
         'exp': currentExp,
         'last_login_date': today,
+        'current_streak': currentStreak,
+        'longest_streak': longestStreak,
       }).eq('id', userId);
 
       return dailyLoginExp;
