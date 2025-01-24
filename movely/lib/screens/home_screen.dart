@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Current Streak 5k',
+                          'Current Login Streak',
                           style: TextStyle(
                             color: Colors.grey[400],
                             fontSize: 14,
@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Best Streak',
+                          'Longest Login Streak',
                           style: TextStyle(
                             color: Colors.grey[400],
                             fontSize: 14,
