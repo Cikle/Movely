@@ -15,6 +15,8 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   List<Map<String, dynamic>> _users = [];
   bool _isLoading = true;
+  final _currentUserId = Supabase.instance.client.auth.currentUser?.id;
+  List<String> _following = [];
 
   @override
   void initState() {
@@ -28,6 +30,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
 
     try {
+      // Get current user's following list
+      final userData = await Supabase.instance.client
+          .from('users')
+          .select('following')
+          .eq('id', _currentUserId)
+          .single();
+      
+      final following = (userData['following'] as List?) ?? [];
+
+      // Get all users
       final response = await Supabase.instance.client
           .from('users')
           .select()
@@ -36,6 +48,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
       setState(() {
         _users = List<Map<String, dynamic>>.from(response);
+        _following = following.map((id) => id.toString()).toList();
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,7 +109,30 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('@${user['username']}'),
+                        Row(
+                          children: [
+                            Text('@${user['username']}'),
+                            if (_following.contains(user['id']))
+                              Container(
+                                margin: const EdgeInsets.only(left: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple.shade400.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Following',
+                                  style: TextStyle(
+                                    color: Colors.deepPurple.shade200,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                         const SizedBox(height: 4),
                         Row(
                           children: [

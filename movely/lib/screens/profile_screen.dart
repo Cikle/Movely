@@ -20,6 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
   bool _isFollowing = false;
   Map<String, dynamic>? _userData;
+  List<dynamic> _following = [];
+  List<dynamic> _followers = [];
   final _currentUserId = Supabase.instance.client.auth.currentUser?.id;
 
   @override
@@ -42,7 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       setState(() {
         _userData = data;
-        _isFollowing = (data['followers'] as List).contains(_currentUserId);
+        _following = data['following'] ?? [];
+        _followers = data['followers'] ?? [];
+        _isFollowing = _followers.contains(_currentUserId);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -160,10 +164,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatColumn('Following', 
-                  (_userData!['following'] as List).length.toString()),
-                _buildStatColumn('Followers', 
-                  (_userData!['followers'] as List).length.toString()),
+                _buildStatColumn('Following', _following.length.toString()),
+                _buildStatColumn('Followers', _followers.length.toString()),
                 _buildStatColumn('Streak', 
                   (_userData!['current_streak'] ?? 0).toString()),
               ],

@@ -1,7 +1,7 @@
 -- Add following/followers to users table
 ALTER TABLE public.users 
-ADD COLUMN IF NOT EXISTS following UUID[] DEFAULT '{}',
-ADD COLUMN IF NOT EXISTS followers UUID[] DEFAULT '{}';
+ADD COLUMN IF NOT EXISTS following UUID[] DEFAULT ARRAY[]::UUID[],
+ADD COLUMN IF NOT EXISTS followers UUID[] DEFAULT ARRAY[]::UUID[];
 
 -- Create function to handle following
 CREATE OR REPLACE FUNCTION follow_user(follower_id UUID, following_id UUID)
