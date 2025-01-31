@@ -180,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     : Colors.deepPurple.shade400,
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                child: Text(_isFollowing ? 'Unfollow' : 'Follow'),
+                child: Text(_isFollowing ? 'Following' : 'Follow'),
               ),
           ],
         ),
