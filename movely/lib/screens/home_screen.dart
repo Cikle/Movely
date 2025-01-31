@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movely/screens/auth_screen.dart';
-import 'package:movely/screens/search_screen.dart';
+import 'package:movely/screens/explore_screen.dart';
 import 'package:movely/services/activity_service.dart';
 import 'package:movely/services/step_service.dart';
 import 'package:movely/models/activity.dart';
@@ -119,12 +119,12 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Movely'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.explore),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SearchScreen(
+                  builder: (context) => ExploreScreen(
                     activityService: widget.activityService,
                   ),
                 ),
