@@ -34,9 +34,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
       final userData = await Supabase.instance.client
           .from('users')
           .select('following')
-          .eq('id', _currentUserId)
+          .eq('id', _currentUserId ?? '')
           .single();
-      
+
       final following = (userData['following'] as List?) ?? [];
 
       // Get all users
@@ -120,7 +120,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple.shade400.withOpacity(0.2),
+                                  color: Colors.deepPurple.shade400
+                                      .withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
