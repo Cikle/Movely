@@ -27,8 +27,6 @@ Movely ist eine Fitness-Tracking-Anwendung, die Streak-Systeme wie bei Duolingo 
 | 3.2  | Muss | Funktional | Als User möchte ich EXP für meine Aktivitäten erhalten |
 | 4.1  | Muss | Funktional | Als User möchte ich anderen Nutzern folgen können |
 | 4.2  | Muss | Funktional | Als User möchte ich die Aktivitäten anderer sehen können |
-| 5.1  | Kann | Qualität | Als User möchte ich ein personalisiertes Profil haben |
-| 5.2  | Kann | Qualität | Als User möchte ich Benachrichtigungen erhalten |
 
 ### 1.3 Testfälle
 
@@ -54,7 +52,7 @@ Movely ist eine Fitness-Tracking-Anwendung, die Streak-Systeme wie bei Duolingo 
 | 1.A  | 17.01.25 | Cyril Lutziger | Implementierung der E-Mail-Registrierung | 120' |
 | 1.B  | 17.01.25 | Cyril Lutziger | Integration des OTP-Systems | 90' |
 | 2.A  | 24.01.25 | Cyril Lutziger | Implementierung der Schritterkennung | 180' |
-| 2.B  | 24.01.25 | Cyril Lutziger | Entwicklung der Statistik-Anzeige | 120' |
+| 2.B  | 24.01.25 | Cyril Lutziger | Entwicklung der Anzeige | 120' |
 | 3.A  | 31.01.25 | Cyril Lutziger | Entwicklung des Streak-Systems | 150' |
 | 3.B  | 31.01.25 | Cyril Lutziger | Implementation des EXP-Systems | 90' |
 | 4.A  | 21.02.25 | Cyril Lutziger | Entwicklung der Follower-Funktionalität | 180' |
