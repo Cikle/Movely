@@ -9,6 +9,8 @@ Lutziger Cyril
 | 31.01.25 | 0.0.3   | Soziale Funktionen integriert, Follower-System implementiert                                     |
 | 21.02.25 | 0.0.4   | Integration und Tests durchgeführt, UI/UX optimiert                                              |
 | 28.02.25 | 0.0.5   | Fehlerhafte Implementierungen und Errors gefixt                                                  |
+| 07.03.25 | 0.0.5   | Finales Testing und Projektabschluss                                                             |
+
 
 ## 1 Informieren
 
