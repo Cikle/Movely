@@ -86,9 +86,9 @@ Die GPS-Routenverfolgung wurde aus Zeitgründen aus dem Projektumfang entfernt. 
 | 1.2.1 | 17.01.25 | Cyril Lutziger | OK | - |
 | 2.1.1 | 24.01.25 | Cyril Lutziger | OK | - |
 | 2.2.1 | 24.01.25 | Cyril Lutziger | OK | - |
-| 3.1.1 | 31.01.25 | Cyril Lutziger | NOK | Streak-Reset bei Mitternacht funktioniert |
-| 3.2.1 | 31.01.25 | Cyril Lutziger | NOK | EXP-System arbeitet korrekt |
-| 4.1.1 | 21.02.25 | Cyril Lutziger | NOK | Follow-Funktion funktioniert |
+| 3.1.1 | 31.01.25 | Cyril Lutziger | NOK | Streak-Reset bei Mitternacht funktioniert nicht|
+| 3.2.1 | 31.01.25 | Cyril Lutziger | NOK | EXP-System arbeitet nicht korrekt |
+| 4.1.1 | 21.02.25 | Cyril Lutziger | NOK | Follow-Funktion funktioniert nicht |
 | 4.2.1 | 21.02.25 | Cyril Lutziger | OK | Feed zeigt Aktivitäten korrekt an |
 | 3.1.1 | 28.01.25 | Cyril Lutziger | OK | Streak-Reset bei Mitternacht funktioniert |
 | 3.2.1 | 28.01.25 | Cyril Lutziger | OK | EXP-System arbeitet korrekt |
