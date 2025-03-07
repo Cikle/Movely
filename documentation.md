@@ -45,7 +45,8 @@ Movely ist eine Fitness-Tracking-Anwendung, die Streak-Systeme wie bei Duolingo 
 | 4.2.1 | Eingeloggt | Aktivitäten-Feed öffnen | Feed wird angezeigt |
 
 ### 1.4 Diagramme
-![Screenshot 2025-03-07 145519](https://github.com/user-attachments/assets/cfad2a50-64f9-44fb-a632-649648eba64e)
+![Screenshot 2025-03-07 152506](https://github.com/user-attachments/assets/4b1efc93-1b64-485e-9c03-94b1e78c8109)
+
 Erstellt mit der Hilfe von Phind.
 
 ## 2 Planen
