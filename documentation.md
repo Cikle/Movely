@@ -8,6 +8,7 @@ Lutziger Cyril
 | 24.01.25 | 0.0.2   | Streak-System entwickelt, Login-Streak implementiert                                             |
 | 31.01.25 | 0.0.3   | Soziale Funktionen integriert, Follower-System implementiert                                     |
 | 21.02.25 | 0.0.4   | Integration und Tests durchgeführt, UI/UX optimiert                                              |
+| 28.02.25 | 0.0.5   | Fehlerhafte Implementierungen und Errors gefixt                                                  |
 
 ## 1 Informieren
 
